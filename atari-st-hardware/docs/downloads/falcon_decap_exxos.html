@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-gb">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+<link rel="canonical" href="https://www.exxosforum.co.uk">
+
+
+<!-- DEBUG: SCRIPT_NAME=viewtopic, SEARCH_ID= -->
+
+
+<title>Atari Falcon custom chips decapsulated and available for reverse engineering - exxos's Atari, Amiga &amp; retro forum</title>
+
+
+	<link rel="canonical" href="https://www.exxosforum.co.uk/forum/viewtopic.php?t=7793">
+
+
+
+
+
+
+<!--
+	phpBB style name: prosilver
+	Based on style:   prosilver (this is the default phpBB3 style)
+	Original author:  Tom Beddard ( http://www.subBlue.com/ )
+	Modified by:
+-->
+
+<link href="./assets/css/font-awesome.min.css?assets_version=567" rel="stylesheet">
+<link href="./styles/prosilver/theme/stylesheet.css?assets_version=567" rel="stylesheet">
+<link href="./styles/prosilver/theme/en/stylesheet.css?assets_version=567" rel="stylesheet">
+
+
+
+
+<!--[if lte IE 9]>
+	<link href="./styles/prosilver/theme/tweaks.css?assets_version=567" rel="stylesheet">
+<![endif]-->
+
+<style type="text/css">
+    .mention {
+        color: #ff0000;
+    }
+</style><link rel="stylesheet" href="https://www.exxosforum.co.uk/forum/ext/w3all/imageattachrotation/styles/all/template/css/style.css">
+
+<link href="./ext/paul999/mention/styles/all/theme/mention.css?assets_version=567" rel="stylesheet" media="screen">
+<link href="./ext/rmcgirr83/elonw/styles/all/theme/elonw.css?assets_version=567" rel="stylesheet" media="screen">
+<link href="./ext/vse/abbc3/styles/all/theme/abbc3_common.css?assets_version=567" rel="stylesheet" media="screen">
+<link href="./ext/phpbb/boardannouncements/styles/all/theme/boardannouncements.css?assets_version=567" rel="stylesheet" media="screen">
+<link href="./ext/vse/lightbox/styles/all/template/lightbox/css/lightbox.min.css?assets_version=567" rel="stylesheet" media="screen">
+
+
+	<style>
+		@media (min-width: 900px) {
+						.content img.postimage,
+			.attachbox img.postimage {
+				
+				max-width: 700px !important;
+			}
+		}
+	</style>
+
+</head>
+<body id="phpbb" class="nojs notouch section-viewtopic ltr ">
+
+
+<div id="wrap" class="wrap">
+	<a id="top" class="top-anchor" accesskey="t"></a>
+	<div id="page-header">
+		<div class="headerbar" role="banner">
+					<div class="inner">
+
+			<div id="site-description" class="site-description">
+		<a id="logo" class="logo" href="./index.php?sid=073275b0166b8699f58eacfaa952f930" title="Board index">
+					<span class="site_logo"></span>
+				</a>
+				<p>We welcome retro users &amp; hardware gurus alike! Come and join the party :)</p>
+				<p class="skiplink"><a href="#start_here">Skip to content</a></p>
+			</div>
+
+
+
+			</div>
+					</div>
+				<div class="navbar" role="navigation">
+	<div class="inner">
+
+	<ul id="nav-main" class="nav-main linklist" role="menubar">
+
+		<li id="quick-links" class="quick-links dropdown-container responsive-menu" data-skip-responsive="true">
+			<a href="#" class="dropdown-trigger">
+				<i class="icon fa-bars fa-fw" aria-hidden="true"></i><span>Quick links</span>
+			</a>
+			<div class="dropdown">
+				<div class="pointer"><div class="pointer-inner"></div></div>
+				<ul class="dropdown-contents" role="menu">
+					
+											<li class="separator"></li>
+																									<li>
+								<a href="./search.php?search_id=unanswered&amp;sid=073275b0166b8699f58eacfaa952f930" role="menuitem">
+									<i class="icon fa-file-o fa-fw icon-gray" aria-hidden="true"></i><span>Unanswered topics</span>
+								</a>
+							</li>
+							<li>
+								<a href="./search.php?search_id=active_topics&amp;sid=073275b0166b8699f58eacfaa952f930" role="menuitem">
+									<i class="icon fa-file-o fa-fw icon-blue" aria-hidden="true"></i><span>Active topics</span>
+								</a>
+							</li>
+							<li class="separator"></li>
+							<li>
+								<a href="./search.php?sid=073275b0166b8699f58eacfaa952f930" role="menuitem">
+									<i class="icon fa-search fa-fw" aria-hidden="true"></i><span>Search</span>
+								</a>
+							</li>
+					
+										<li class="separator"></li>
+
+									</ul>
+			</div>
+		</li>
+
+								<li data-last-responsive="true">
+				<a href="https://www.exxosforum.co.uk/forum/search.php?search_id=newposts" title="" role="menuitem" >
+				<i class="icon fa-external-link fa-fw" aria-hidden="true"></i><span>New posts</span>
+				</a>
+			</li>
+					<li data-skip-responsive="true">
+			<a href="/forum/app.php/help/faq?sid=073275b0166b8699f58eacfaa952f930" rel="help" title="Frequently Asked Questions" role="menuitem">
+				<i class="icon fa-question-circle fa-fw" aria-hidden="true"></i><span>FAQ</span>
+			</a>
+		</li>
+								<li data-last-responsive="true">
+				<a href="https://www.exxosforum.co.uk/atari/store2/" title="exxos webshop" role="menuitem" target="_blank">
+				<i class="icon fa-shopping-cart fa-fw" aria-hidden="true"></i><span>Shop</span>
+				</a>
+			</li>
+								<li data-last-responsive="true">
+				<a href="https://www.atari-wiki.com/index.php?title=Main_Page" title="Atari Wiki" role="menuitem" target="_blank">
+				<i class="icon fa-book fa-fw" aria-hidden="true"></i><span>Wiki</span>
+				</a>
+			</li>
+								<li data-last-responsive="true">
+				<a href="https://www.atari-wiki.com/index.php?title=Atari_Wiki:Donate" title="Donate to the form &amp; wiki running costs" role="menuitem" target="_blank">
+				<i class="icon fa-dollar fa-fw" aria-hidden="true"></i><span>Donate</span>
+				</a>
+			</li>
+				<li data-last-responsive="true">
+		<a href="/forum/app.php/rules?sid=073275b0166b8699f58eacfaa952f930" rel="help" title="View the Rules of this Board" role="menuitem">
+			<i class="icon fa-book fa-fw" aria-hidden="true"></i><span>Rules</span>
+		</a>
+	</li>
+				
+			<li class="rightside"  data-skip-responsive="true">
+			<a href="./ucp.php?mode=login&amp;redirect=viewtopic.php%3Fp%3D133569&amp;sid=073275b0166b8699f58eacfaa952f930" title="Login" accesskey="x" role="menuitem">
+				<i class="icon fa-power-off fa-fw" aria-hidden="true"></i><span>Login</span>
+			</a>
+		</li>
+					<li class="rightside" data-skip-responsive="true">
+				<a href="./ucp.php?mode=register&amp;sid=073275b0166b8699f58eacfaa952f930" role="menuitem">
+					<i class="icon fa-pencil-square-o  fa-fw" aria-hidden="true"></i><span>Register</span>
+				</a>
+			</li>
+						</ul>
+
+	<ul id="nav-breadcrumbs" class="nav-breadcrumbs linklist navlinks" role="menubar">
+				
+		
+		<li class="breadcrumbs" itemscope itemtype="https://schema.org/BreadcrumbList">
+
+			
+							<span class="crumb" itemtype="https://schema.org/ListItem" itemprop="itemListElement" itemscope><a itemprop="item" href="./index.php?sid=073275b0166b8699f58eacfaa952f930" accesskey="h" data-navbar-reference="index"><i class="icon fa-home fa-fw"></i><span itemprop="name">Board index</span></a><meta itemprop="position" content="1" /></span>
+
+											
+								<span class="crumb" itemtype="https://schema.org/ListItem" itemprop="itemListElement" itemscope data-forum-id="45"><a itemprop="item" href="./viewforum.php?f=45&amp;sid=073275b0166b8699f58eacfaa952f930"><span itemprop="name">GENERAL</span></a><meta itemprop="position" content="2" /></span>
+															
+								<span class="crumb" itemtype="https://schema.org/ListItem" itemprop="itemListElement" itemscope data-forum-id="20"><a itemprop="item" href="./viewforum.php?f=20&amp;sid=073275b0166b8699f58eacfaa952f930"><span itemprop="name">NEWS &amp; ANNOUNCEMENTS</span></a><meta itemprop="position" content="3" /></span>
+							
+					</li>
+
+		
+
+									<div id="search-box" class="search-box search-header" role="search">
+				<form action="./search.php?sid=073275b0166b8699f58eacfaa952f930" method="get" id="search">
+				<fieldset>
+					<input name="keywords" id="keywords" type="search" maxlength="128" title="Search for keywords" class="inputbox search tiny" size="20" value="" placeholder="Search…" />
+					<button class="button button-search" type="submit" title="Search">
+						<i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">Search</span>
+					</button>
+					<a href="./search.php?sid=073275b0166b8699f58eacfaa952f930" class="button button-search-end" title="Advanced search">
+						<i class="icon fa-cog fa-fw" aria-hidden="true"></i><span class="sr-only">Advanced search</span>
+					</a>
+					<input type="hidden" name="sid" value="073275b0166b8699f58eacfaa952f930" />
+
+				</fieldset>
+				</form>
+			</div>
+						
+
+					<li class="rightside responsive-search">
+				<a href="./search.php?sid=073275b0166b8699f58eacfaa952f930" title="View the advanced search options" role="menuitem">
+					<i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">Search</span>
+				</a>
+			</li>
+			</ul>
+
+	</div>
+</div>
+	</div>
+
+	
+	<a id="start_here" class="anchor"></a>
+	<div id="page-body" class="page-body" role="main">
+		
+					<div id="phpbb_announcement_1" class="phpbb_announcement">
+					<a href="/forum/app.php/boardannouncements/close/1?hash=1d086db9&amp;sid=073275b0166b8699f58eacfaa952f930" data-ajax="close_announcement" data-overlay="false" class="close" title="Close announcement">
+				<i class="icon fa-fw fa-times"></i>
+			</a>
+				<div><span style="font-size:150%;line-height:116%"></span><div style="text-align:center"><span style="font-size:150%;line-height:116%"><strong class="text-strong">You will not be able to post if you are still using Microsoft email addresses such as Hotmail etc<br>
+See here for more information <a href="https://www.exxosforum.co.uk/forum/viewtopic.php?f=20&amp;t=7296" class="postlink">viewtopic.php?f=20&amp;t=7296</a></strong></span></div></div>
+	</div>
+	<div id="phpbb_announcement_6" class="phpbb_announcement">
+					<a href="/forum/app.php/boardannouncements/close/6?hash=1d086db9&amp;sid=073275b0166b8699f58eacfaa952f930" data-ajax="close_announcement" data-overlay="false" class="close" title="Close announcement">
+				<i class="icon fa-fw fa-times"></i>
+			</a>
+				<div><span style="font-size:150%;line-height:116%"></span><div style="text-align:center"><span style="font-size:150%;line-height:116%"><strong class="text-strong">DO NOT USE MOBILE / CGNAT DEVICES WHERE THE IP CHANGES CONSTANTLY!<br>
+At this time, it is unfortunately not possible to whitelist users when your IP changes constantly.<br>
+You may inadvertently get banned because a previous attack may have used the IP you are now on. <br>
+So I suggest people only use fixed IP address devices until I can think of a solution for this problem!<br>
+</strong></span></div></div>
+	</div>
+
+<h2 class="topic-title"><a href="./viewtopic.php?t=7793&amp;sid=073275b0166b8699f58eacfaa952f930">Atari Falcon custom chips decapsulated and available for reverse engineering</a></h2>
+<!-- NOTE: remove the style="display: none" when you want to have the forum description on the topic body -->
+<div style="display: none !important;">Latest Atari related news.<br /></div>
+
+
+<div class="action-bar bar-top">
+	
+			<a href="./posting.php?mode=reply&amp;t=7793&amp;sid=073275b0166b8699f58eacfaa952f930" class="button" title="Post a reply">
+							<span>Post Reply</span> <i class="icon fa-reply fa-fw" aria-hidden="true"></i>
+					</a>
+	
+			<div class="dropdown-container dropdown-button-control topic-tools">
+		<span title="Topic tools" class="button button-secondary dropdown-trigger dropdown-select">
+			<i class="icon fa-wrench fa-fw" aria-hidden="true"></i>
+			<span class="caret"><i class="icon fa-sort-down fa-fw" aria-hidden="true"></i></span>
+		</span>
+		<div class="dropdown">
+			<div class="pointer"><div class="pointer-inner"></div></div>
+			<ul class="dropdown-contents">
+																												<li>
+					<a href="./viewtopic.php?t=7793&amp;sid=073275b0166b8699f58eacfaa952f930&amp;view=print" title="Print view" accesskey="p">
+						<i class="icon fa-print fa-fw" aria-hidden="true"></i><span>Print view</span>
+					</a>
+				</li>
+											</ul>
+		</div>
+	</div>
+	
+			<div class="search-box" role="search">
+			<form method="get" id="topic-search" action="./search.php?sid=073275b0166b8699f58eacfaa952f930">
+			<fieldset>
+				<input class="inputbox search tiny"  type="search" name="keywords" id="search_keywords" size="20" placeholder="Search this topic…" />
+				<button class="button button-search" type="submit" title="Search">
+					<i class="icon fa-search fa-fw" aria-hidden="true"></i><span class="sr-only">Search</span>
+				</button>
+				<a href="./search.php?sid=073275b0166b8699f58eacfaa952f930" class="button button-search-end" title="Advanced search">
+					<i class="icon fa-cog fa-fw" aria-hidden="true"></i><span class="sr-only">Advanced search</span>
+				</a>
+				<input type="hidden" name="t" value="7793" />
+<input type="hidden" name="sf" value="msgonly" />
+<input type="hidden" name="sid" value="073275b0166b8699f58eacfaa952f930" />
+
+			</fieldset>
+			</form>
+		</div>
+	
+			<div class="pagination">
+			9 posts
+							&bull; Page <strong>1</strong> of <strong>1</strong>
+					</div>
+		</div>
+
+
+
+
+			<div id="p130437" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile130437">
+			<dt class="no-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<a href="./memberlist.php?mode=viewprofile&amp;u=82&amp;sid=073275b0166b8699f58eacfaa952f930" class="username">mikro</a>							</dt>
+
+									
+		<dd class="profile-posts"><strong>Posts:</strong> <a href="./search.php?author_id=82&amp;sr=posts&amp;sid=073275b0166b8699f58eacfaa952f930">812</a></dd>		<dd class="profile-joined"><strong>Joined:</strong> Mon Aug 28, 2017 11:22 pm</dd>		
+		
+											<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Kosice, Slovakia</dd>
+												
+							<dd class="profile-contact">
+				<strong>Contact:</strong>
+				<div class="dropdown-container dropdown-left">
+					<a href="#" class="dropdown-trigger" title="Contact mikro">
+						<i class="icon fa-commenting-o fa-fw icon-lg" aria-hidden="true"></i><span class="sr-only">Contact mikro</span>
+					</a>
+					<div class="dropdown">
+						<div class="pointer"><div class="pointer-inner"></div></div>
+						<div class="dropdown-contents contact-icons">
+																																								<div>
+																	<a href="http://mikro.atari.org" title="Website" class="last-cell">
+										<span class="contact-icon phpbb_website-icon">Website</span>									</a>
+																	</div>
+																					</div>
+					</div>
+				</div>
+			</dd>
+				
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content130437">
+
+					<h3 class="first">
+						<a href="./viewtopic.php?p=130437&amp;sid=073275b0166b8699f58eacfaa952f930#p130437">Atari Falcon custom chips decapsulated and available for reverse engineering</a>
+		</h3>
+
+													<ul class="post-buttons">
+																																									<li>
+							<a href="./posting.php?mode=quote&amp;p=130437&amp;sid=073275b0166b8699f58eacfaa952f930" title="Reply with quote" class="button button-icon-only">
+								<i class="icon fa-quote-left fa-fw" aria-hidden="true"></i><span class="sr-only">Quote</span>
+							</a>
+						</li>
+														</ul>
+							
+						<p class="author">
+									<a class="unread" href="./viewtopic.php?p=130437&amp;sid=073275b0166b8699f58eacfaa952f930#p130437" title="Post">
+						<i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
+					</a>
+								<span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=82&amp;sid=073275b0166b8699f58eacfaa952f930" class="username">mikro</a></strong> &raquo; </span><time datetime="2025-06-26T15:20:23+00:00">Thu Jun 26, 2025 4:20 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">Hi everyone,<br>
+<br>
+as hinted in <a href="https://www.atari-forum.com/viewtopic.php?p=479319#p479319" class="postlink">https://www.atari-forum.com/viewtopic.p ... 19#p479319</a>, there has been something cool in the works since the end of 2024 and finally, we can announce it publicly. I'll let you read the history and background on the website: <a href="https://mikrosk.github.io/decap" class="postlink">https://mikrosk.github.io/decap</a>.<br>
+<br>
+Me (Miro Kropacek) and <em class="mention">@ijor</em> (Jorge Cwik) have been working on this together, with me funding the whole initiative and taking care of administrative tasks (like this one <img class="smilies" src="./images/smilies/icon_e_wink.gif" width="15" height="17" alt=";-)" title="Wink">) while ijor covered the technical part, patiently explaining to me every option and nuance of the steps to be taken. Without his help this would never emerge into reality, so thanks for that mate.<br>
+<br>
+Later we got help from <em class="mention">@sigmate</em> (Mathieu) and <a href="https://siliconpr0n.org/archive/doku.php?id=infosecdj:start#commissioning_work" class="postlink">Dmitry</a>, thanks to whom we are (will be) able to offer complete die shots not only for the Videl but also for the SDMA and Combel (we are still in talks how to finish these two with the best possible results, even though we have already received pretty cool images from him already).<br>
+<br>
+As you can read on the website, this whole fun had its (literal) cost, which must be paid by myself. So when you read the website and like what you see, I appreciate any donation towards making the payment a bit less heavier. If it's not explicit enough on the website: the die shots will be released publicly, without any restrictions, in a few months' time so you are contributing for a public release for everyone's use (Apollo, SuperVidel, new Falcon boards, ... you name it).<br>
+<br>
+Also, if you have any questions, ideas, offers for collaboration on the die shots, feel free to contact me here or via PM.</div>
+
+			
+			
+									
+						
+										
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p130438" class="post has-profile bg1">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile130438">
+			<dt class="has-profile-rank has-avatar">
+				<div class="avatar-container">
+																<a href="./memberlist.php?mode=viewprofile&amp;u=296&amp;sid=073275b0166b8699f58eacfaa952f930" class="avatar"><img class="avatar" src="./download/file.php?avatar=296_1592242751.png" width="64" height="64" alt="User avatar" /></a>														</div>
+								<a href="./memberlist.php?mode=viewprofile&amp;u=296&amp;sid=073275b0166b8699f58eacfaa952f930" style="color: #00BB00;" class="username-coloured">mrbombermillzy</a>							</dt>
+
+						<dd class="profile-rank">Moderator<br /><img src="./images/ranks/globalmod2.png" alt="Moderator" title="Moderator" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> <a href="./search.php?author_id=296&amp;sr=posts&amp;sid=073275b0166b8699f58eacfaa952f930">2267</a></dd>		<dd class="profile-joined"><strong>Joined:</strong> Sun Jun 03, 2018 7:37 pm</dd>		
+		
+						
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content130438">
+
+					<h3 >
+						<a href="./viewtopic.php?p=130438&amp;sid=073275b0166b8699f58eacfaa952f930#p130438">Re: Atari Falcon custom chips decapsulated and available for reverse engineering</a>
+		</h3>
+
+													<ul class="post-buttons">
+																																									<li>
+							<a href="./posting.php?mode=quote&amp;p=130438&amp;sid=073275b0166b8699f58eacfaa952f930" title="Reply with quote" class="button button-icon-only">
+								<i class="icon fa-quote-left fa-fw" aria-hidden="true"></i><span class="sr-only">Quote</span>
+							</a>
+						</li>
+														</ul>
+							
+						<p class="author">
+									<a class="unread" href="./viewtopic.php?p=130438&amp;sid=073275b0166b8699f58eacfaa952f930#p130438" title="Post">
+						<i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
+					</a>
+								<span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=296&amp;sid=073275b0166b8699f58eacfaa952f930" style="color: #00BB00;" class="username-coloured">mrbombermillzy</a></strong> &raquo; </span><time datetime="2025-06-26T15:44:18+00:00">Thu Jun 26, 2025 4:44 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">Absolute miracle workers!  Well done!<br>
+<br>
+<img class="smilies" src="./images/smilies/bravo.gif" width="77" height="40" alt=":bravo:" title="bravo"></div>
+
+			
+			
+									
+						
+										
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p130439" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile130439">
+			<dt class="has-profile-rank has-avatar">
+				<div class="avatar-container">
+																<a href="./memberlist.php?mode=viewprofile&amp;u=1172&amp;sid=073275b0166b8699f58eacfaa952f930" class="avatar"><img class="avatar" src="./download/file.php?avatar=1172_1609888332.jpg" width="88" height="90" alt="User avatar" /></a>														</div>
+								<a href="./memberlist.php?mode=viewprofile&amp;u=1172&amp;sid=073275b0166b8699f58eacfaa952f930" class="username">viking272</a>							</dt>
+
+						<dd class="profile-rank">Site sponsor<br /><img src="./images/ranks/sponsor_ranks.png" alt="Site sponsor" title="Site sponsor" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> <a href="./search.php?author_id=1172&amp;sr=posts&amp;sid=073275b0166b8699f58eacfaa952f930">286</a></dd>		<dd class="profile-joined"><strong>Joined:</strong> Mon Aug 10, 2020 11:32 am</dd>		
+		
+											<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Reading, Berkshire, UK</dd>
+							
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content130439">
+
+					<h3 >
+						<a href="./viewtopic.php?p=130439&amp;sid=073275b0166b8699f58eacfaa952f930#p130439">Re: Atari Falcon custom chips decapsulated and available for reverse engineering</a>
+		</h3>
+
+													<ul class="post-buttons">
+																																									<li>
+							<a href="./posting.php?mode=quote&amp;p=130439&amp;sid=073275b0166b8699f58eacfaa952f930" title="Reply with quote" class="button button-icon-only">
+								<i class="icon fa-quote-left fa-fw" aria-hidden="true"></i><span class="sr-only">Quote</span>
+							</a>
+						</li>
+														</ul>
+							
+						<p class="author">
+									<a class="unread" href="./viewtopic.php?p=130439&amp;sid=073275b0166b8699f58eacfaa952f930#p130439" title="Post">
+						<i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
+					</a>
+								<span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=1172&amp;sid=073275b0166b8699f58eacfaa952f930" class="username">viking272</a></strong> &raquo; </span><time datetime="2025-06-26T15:46:26+00:00">Thu Jun 26, 2025 4:46 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">That's amazing, well done team, especially Miro to push this forward. Happy to contribute mate.</div>
+
+			
+			
+									
+						
+										
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p130441" class="post has-profile bg1">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile130441">
+			<dt class="has-profile-rank has-avatar">
+				<div class="avatar-container">
+																<a href="./memberlist.php?mode=viewprofile&amp;u=2&amp;sid=073275b0166b8699f58eacfaa952f930" class="avatar"><img class="avatar" src="./download/file.php?avatar=2_1767005487.gif" width="90" height="89" alt="User avatar" /></a>														</div>
+								<a href="./memberlist.php?mode=viewprofile&amp;u=2&amp;sid=073275b0166b8699f58eacfaa952f930" style="color: #AA0000;" class="username-coloured">exxos</a>							</dt>
+
+						<dd class="profile-rank">Site Admin<br /><img src="./images/ranks/admin2.png" alt="Site Admin" title="Site Admin" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> <a href="./search.php?author_id=2&amp;sr=posts&amp;sid=073275b0166b8699f58eacfaa952f930">28197</a></dd>		<dd class="profile-joined"><strong>Joined:</strong> Wed Aug 16, 2017 11:19 pm</dd>		
+		
+											<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> UK</dd>
+												
+							<dd class="profile-contact">
+				<strong>Contact:</strong>
+				<div class="dropdown-container dropdown-left">
+					<a href="#" class="dropdown-trigger" title="Contact exxos">
+						<i class="icon fa-commenting-o fa-fw icon-lg" aria-hidden="true"></i><span class="sr-only">Contact exxos</span>
+					</a>
+					<div class="dropdown">
+						<div class="pointer"><div class="pointer-inner"></div></div>
+						<div class="dropdown-contents contact-icons">
+																																								<div>
+																	<a href="http://www.exxoshost.co.uk/atari/" title="Website" class="last-cell">
+										<span class="contact-icon phpbb_website-icon">Website</span>									</a>
+																	</div>
+																					</div>
+					</div>
+				</div>
+			</dd>
+				
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content130441">
+
+					<h3 >
+						<a href="./viewtopic.php?p=130441&amp;sid=073275b0166b8699f58eacfaa952f930#p130441">Re: Atari Falcon custom chips decapsulated and available for reverse engineering</a>
+		</h3>
+
+													<ul class="post-buttons">
+																																									<li>
+							<a href="./posting.php?mode=quote&amp;p=130441&amp;sid=073275b0166b8699f58eacfaa952f930" title="Reply with quote" class="button button-icon-only">
+								<i class="icon fa-quote-left fa-fw" aria-hidden="true"></i><span class="sr-only">Quote</span>
+							</a>
+						</li>
+														</ul>
+							
+						<p class="author">
+									<a class="unread" href="./viewtopic.php?p=130441&amp;sid=073275b0166b8699f58eacfaa952f930#p130441" title="Post">
+						<i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
+					</a>
+								<span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=2&amp;sid=073275b0166b8699f58eacfaa952f930" style="color: #AA0000;" class="username-coloured">exxos</a></strong> &raquo; </span><time datetime="2025-06-26T16:03:16+00:00">Thu Jun 26, 2025 5:03 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content"><img class="smilies" src="./images/smilies/bravo.gif" width="77" height="40" alt=":bravo:" title="bravo"></div>
+
+			
+			
+									
+						
+							<div id="sig130441" class="signature"><a href="https://exxosforum.co.uk/atari/last/index.htm" class="postlink">The LaST Upgrade</a>    - <a href="https://www.exxoshost.co.uk/atari/store2/" class="postlink">Web store</a> - <a href="https://exxosforum.co.uk/atari/STOS_index.htm" class="postlink">STOS TIME TUNNEL</a>     -      <a href="https://exxosforum.co.uk/atari/mag_index.htm" class="postlink">MAGS &amp; COVERDISKS</a>       -         <a href="https://exxosforum.co.uk/atari/PDL/FLOPPYSHOP/index.htm" class="postlink">FLOPPYSHOP PDL</a>         -      <a href="https://exxosforum.co.uk/atari/games/index.htm" class="postlink"> Game Menus</a>     -   <a href="https://www.atari-wiki.com/index.php?title=Main_Page" class="postlink">Atari Wiki </a> - <a href="https://www.atari-wiki.com/index.php?title=Atari_Wiki:Donate" class="postlink">Donate</a> - <a href="https://www.exxosforum.co.uk/forum/viewtopic.php?p=120177#p120177" class="postlink">IP BAN CHECK</a></div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p130457" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile130457">
+			<dt class="has-profile-rank has-avatar">
+				<div class="avatar-container">
+																<a href="./memberlist.php?mode=viewprofile&amp;u=1172&amp;sid=073275b0166b8699f58eacfaa952f930" class="avatar"><img class="avatar" src="./download/file.php?avatar=1172_1609888332.jpg" width="88" height="90" alt="User avatar" /></a>														</div>
+								<a href="./memberlist.php?mode=viewprofile&amp;u=1172&amp;sid=073275b0166b8699f58eacfaa952f930" class="username">viking272</a>							</dt>
+
+						<dd class="profile-rank">Site sponsor<br /><img src="./images/ranks/sponsor_ranks.png" alt="Site sponsor" title="Site sponsor" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> <a href="./search.php?author_id=1172&amp;sr=posts&amp;sid=073275b0166b8699f58eacfaa952f930">286</a></dd>		<dd class="profile-joined"><strong>Joined:</strong> Mon Aug 10, 2020 11:32 am</dd>		
+		
+											<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Reading, Berkshire, UK</dd>
+							
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content130457">
+
+					<h3 >
+						<a href="./viewtopic.php?p=130457&amp;sid=073275b0166b8699f58eacfaa952f930#p130457">Re: Atari Falcon custom chips decapsulated and available for reverse engineering</a>
+		</h3>
+
+													<ul class="post-buttons">
+																																									<li>
+							<a href="./posting.php?mode=quote&amp;p=130457&amp;sid=073275b0166b8699f58eacfaa952f930" title="Reply with quote" class="button button-icon-only">
+								<i class="icon fa-quote-left fa-fw" aria-hidden="true"></i><span class="sr-only">Quote</span>
+							</a>
+						</li>
+														</ul>
+							
+						<p class="author">
+									<a class="unread" href="./viewtopic.php?p=130457&amp;sid=073275b0166b8699f58eacfaa952f930#p130457" title="Post">
+						<i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
+					</a>
+								<span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=1172&amp;sid=073275b0166b8699f58eacfaa952f930" class="username">viking272</a></strong> &raquo; </span><time datetime="2025-06-26T19:54:27+00:00">Thu Jun 26, 2025 8:54 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">Sent a donation. Thanks again for the update on this valuable work <img alt="🙏" class="emoji smilies" draggable="false" src="//cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f64f.svg"></div>
+
+			
+			
+									
+						
+										
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p130460" class="post has-profile bg1">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile130460">
+			<dt class="has-profile-rank has-avatar">
+				<div class="avatar-container">
+																<a href="./memberlist.php?mode=viewprofile&amp;u=797&amp;sid=073275b0166b8699f58eacfaa952f930" class="avatar"><img class="avatar" src="./download/file.php?avatar=797_1671306139.gif" width="64" height="60" alt="User avatar" /></a>														</div>
+								<a href="./memberlist.php?mode=viewprofile&amp;u=797&amp;sid=073275b0166b8699f58eacfaa952f930" class="username">Badwolf</a>							</dt>
+
+						<dd class="profile-rank">Site sponsor<br /><img src="./images/ranks/sponsor_ranks.png" alt="Site sponsor" title="Site sponsor" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> <a href="./search.php?author_id=797&amp;sr=posts&amp;sid=073275b0166b8699f58eacfaa952f930">3028</a></dd>		<dd class="profile-joined"><strong>Joined:</strong> Tue Nov 19, 2019 12:09 pm</dd>		
+		
+						
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content130460">
+
+					<h3 >
+						<a href="./viewtopic.php?p=130460&amp;sid=073275b0166b8699f58eacfaa952f930#p130460">Re: Atari Falcon custom chips decapsulated and available for reverse engineering</a>
+		</h3>
+
+													<ul class="post-buttons">
+																																									<li>
+							<a href="./posting.php?mode=quote&amp;p=130460&amp;sid=073275b0166b8699f58eacfaa952f930" title="Reply with quote" class="button button-icon-only">
+								<i class="icon fa-quote-left fa-fw" aria-hidden="true"></i><span class="sr-only">Quote</span>
+							</a>
+						</li>
+														</ul>
+							
+						<p class="author">
+									<a class="unread" href="./viewtopic.php?p=130460&amp;sid=073275b0166b8699f58eacfaa952f930#p130460" title="Post">
+						<i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
+					</a>
+								<span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=797&amp;sid=073275b0166b8699f58eacfaa952f930" class="username">Badwolf</a></strong> &raquo; </span><time datetime="2025-06-26T20:48:52+00:00">Thu Jun 26, 2025 9:48 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content"><img class="smilies" src="./images/smilies/thankyouyellow.gif" width="50" height="37" alt=":thanksyellow:" title="thanks yellow">  <img class="smilies" src="./images/smilies/cheers.gif" width="60" height="40" alt=":cheers:" title="cheers">  <img class="smilies" src="./images/smilies/TFR96.gif" width="38" height="20" alt=":dualthumbup:" title=":dualthumbup">  <img class="smilies" src="./images/smilies/thankyoublue.gif" width="50" height="37" alt=":thanksblue:" title="thanks blue"></div>
+
+			
+			
+									
+						
+							<div id="sig130460" class="signature"><a href="https://github.com/dh219/DFB/wiki" class="postlink">DFB1</a> Open source 50MHz 030 and TT-RAM accelerator for the Falcon<br>
+<a href="https://github.com/dh219/SmallyMouse2" class="postlink">Smalliermouse</a> ST-optimised USB mouse adapter based on SmallyMouse2<br>
+<a href="https://github.com/dh219/FrontBench" class="postlink">FrontBench</a> The Frontier: Elite 2 intro as a benchmark</div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p130465" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile130465">
+			<dt class="has-profile-rank has-avatar">
+				<div class="avatar-container">
+																<a href="./memberlist.php?mode=viewprofile&amp;u=1249&amp;sid=073275b0166b8699f58eacfaa952f930" class="avatar"><img class="avatar" src="./download/file.php?avatar=1249_1718432175.jpg" width="90" height="90" alt="User avatar" /></a>														</div>
+								<a href="./memberlist.php?mode=viewprofile&amp;u=1249&amp;sid=073275b0166b8699f58eacfaa952f930" class="username">sporniket</a>							</dt>
+
+						<dd class="profile-rank">Site sponsor<br /><img src="./images/ranks/sponsor_ranks.png" alt="Site sponsor" title="Site sponsor" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> <a href="./search.php?author_id=1249&amp;sr=posts&amp;sid=073275b0166b8699f58eacfaa952f930">1161</a></dd>		<dd class="profile-joined"><strong>Joined:</strong> Sat Sep 26, 2020 9:12 pm</dd>		
+		
+											<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> France</dd>
+												
+							<dd class="profile-contact">
+				<strong>Contact:</strong>
+				<div class="dropdown-container dropdown-left">
+					<a href="#" class="dropdown-trigger" title="Contact sporniket">
+						<i class="icon fa-commenting-o fa-fw icon-lg" aria-hidden="true"></i><span class="sr-only">Contact sporniket</span>
+					</a>
+					<div class="dropdown">
+						<div class="pointer"><div class="pointer-inner"></div></div>
+						<div class="dropdown-contents contact-icons">
+																																								<div>
+																	<a href="https://github.com/sporniket" title="Website" class="last-cell">
+										<span class="contact-icon phpbb_website-icon">Website</span>									</a>
+																	</div>
+																					</div>
+					</div>
+				</div>
+			</dd>
+				
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content130465">
+
+					<h3 >
+						<a href="./viewtopic.php?p=130465&amp;sid=073275b0166b8699f58eacfaa952f930#p130465">Re: Atari Falcon custom chips decapsulated and available for reverse engineering</a>
+		</h3>
+
+													<ul class="post-buttons">
+																																									<li>
+							<a href="./posting.php?mode=quote&amp;p=130465&amp;sid=073275b0166b8699f58eacfaa952f930" title="Reply with quote" class="button button-icon-only">
+								<i class="icon fa-quote-left fa-fw" aria-hidden="true"></i><span class="sr-only">Quote</span>
+							</a>
+						</li>
+														</ul>
+							
+						<p class="author">
+									<a class="unread" href="./viewtopic.php?p=130465&amp;sid=073275b0166b8699f58eacfaa952f930#p130465" title="Post">
+						<i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
+					</a>
+								<span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=1249&amp;sid=073275b0166b8699f58eacfaa952f930" class="username">sporniket</a></strong> &raquo; </span><time datetime="2025-06-27T05:04:09+00:00">Fri Jun 27, 2025 6:04 am</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">Amazing. Will ensure to donate a little bit.<br>
+<br>
+EDIT : donated</div>
+
+			
+			
+									
+						
+							<div id="sig130465" class="signature">---<br>
+HW : <a href="https://github.com/sporniket/kicad-conversions--atari-ste-motherboard--c300780-001" class="postlink">Conversion of the Atari STE schematics into KiCad</a> — <a href="https://github.com/sporniket/atari-st-mod-rgb565-experiment" class="postlink">RGB-565 colorspace (65K colors) modification for the Atari ST</a><br>
+SW : <a href="https://github.com/sporniket/Sporniket-Nostalgie-Sans" class="postlink">An opentype font project inspired by the Atari ST system 8×16 font</a> — <a href="https://github.com/sporniket/sporny-wrecking-ball" class="postlink">Sporny's Wrecking Ball</a><br>
+<a href="https://github.com/sporniket?tab=repositories" class="postlink">my github</a></div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p133569" class="post has-profile bg1">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile133569">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<a href="./memberlist.php?mode=viewprofile&amp;u=2372&amp;sid=073275b0166b8699f58eacfaa952f930" class="username">MEX68KECB</a>							</dt>
+
+						<dd class="profile-rank">Site sponsor<br /><img src="./images/ranks/sponsor_ranks.png" alt="Site sponsor" title="Site sponsor" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> <a href="./search.php?author_id=2372&amp;sr=posts&amp;sid=073275b0166b8699f58eacfaa952f930">16</a></dd>		<dd class="profile-joined"><strong>Joined:</strong> Wed Apr 05, 2023 1:40 am</dd>		
+		
+						
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content133569">
+
+					<h3 >
+						<a href="./viewtopic.php?p=133569&amp;sid=073275b0166b8699f58eacfaa952f930#p133569">Re: Atari Falcon custom chips decapsulated and available for reverse engineering</a>
+		</h3>
+
+													<ul class="post-buttons">
+																																									<li>
+							<a href="./posting.php?mode=quote&amp;p=133569&amp;sid=073275b0166b8699f58eacfaa952f930" title="Reply with quote" class="button button-icon-only">
+								<i class="icon fa-quote-left fa-fw" aria-hidden="true"></i><span class="sr-only">Quote</span>
+							</a>
+						</li>
+														</ul>
+							
+						<p class="author">
+									<a class="unread" href="./viewtopic.php?p=133569&amp;sid=073275b0166b8699f58eacfaa952f930#p133569" title="Post">
+						<i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
+					</a>
+								<span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=2372&amp;sid=073275b0166b8699f58eacfaa952f930" class="username">MEX68KECB</a></strong> &raquo; </span><time datetime="2025-09-09T02:09:02+00:00">Tue Sep 09, 2025 3:09 am</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">Just sent USD your way mikro.  I hope it didn't convert it to euros but better than a poke in the eye. <img class="smilies" src="./images/smilies/cheers.gif" width="60" height="40" alt=":cheers:" title="cheers"></div>
+
+			
+			
+									
+						
+										
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p133570" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile133570">
+			<dt class="no-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<a href="./memberlist.php?mode=viewprofile&amp;u=82&amp;sid=073275b0166b8699f58eacfaa952f930" class="username">mikro</a>							</dt>
+
+									
+		<dd class="profile-posts"><strong>Posts:</strong> <a href="./search.php?author_id=82&amp;sr=posts&amp;sid=073275b0166b8699f58eacfaa952f930">812</a></dd>		<dd class="profile-joined"><strong>Joined:</strong> Mon Aug 28, 2017 11:22 pm</dd>		
+		
+											<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Kosice, Slovakia</dd>
+												
+							<dd class="profile-contact">
+				<strong>Contact:</strong>
+				<div class="dropdown-container dropdown-left">
+					<a href="#" class="dropdown-trigger" title="Contact mikro">
+						<i class="icon fa-commenting-o fa-fw icon-lg" aria-hidden="true"></i><span class="sr-only">Contact mikro</span>
+					</a>
+					<div class="dropdown">
+						<div class="pointer"><div class="pointer-inner"></div></div>
+						<div class="dropdown-contents contact-icons">
+																																								<div>
+																	<a href="http://mikro.atari.org" title="Website" class="last-cell">
+										<span class="contact-icon phpbb_website-icon">Website</span>									</a>
+																	</div>
+																					</div>
+					</div>
+				</div>
+			</dd>
+				
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content133570">
+
+					<h3 >
+						<a href="./viewtopic.php?p=133570&amp;sid=073275b0166b8699f58eacfaa952f930#p133570">Re: Atari Falcon custom chips decapsulated and available for reverse engineering</a>
+		</h3>
+
+													<ul class="post-buttons">
+																																									<li>
+							<a href="./posting.php?mode=quote&amp;p=133570&amp;sid=073275b0166b8699f58eacfaa952f930" title="Reply with quote" class="button button-icon-only">
+								<i class="icon fa-quote-left fa-fw" aria-hidden="true"></i><span class="sr-only">Quote</span>
+							</a>
+						</li>
+														</ul>
+							
+						<p class="author">
+									<a class="unread" href="./viewtopic.php?p=133570&amp;sid=073275b0166b8699f58eacfaa952f930#p133570" title="Post">
+						<i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span>
+					</a>
+								<span class="responsive-hide">by <strong><a href="./memberlist.php?mode=viewprofile&amp;u=82&amp;sid=073275b0166b8699f58eacfaa952f930" class="username">mikro</a></strong> &raquo; </span><time datetime="2025-09-09T06:17:18+00:00">Tue Sep 09, 2025 7:17 am</time>
+			</p>
+			
+			
+			
+			
+			<div class="content"><blockquote cite="./viewtopic.php?p=133569&amp;sid=073275b0166b8699f58eacfaa952f930#p133569"><div><cite><a href="./memberlist.php?mode=viewprofile&amp;u=2372&amp;sid=073275b0166b8699f58eacfaa952f930">MEX68KECB</a> wrote: <a href="./viewtopic.php?p=133569&amp;sid=073275b0166b8699f58eacfaa952f930#p133569" aria-label="View quoted post" data-post-id="133569" onclick="if(document.getElementById(hash.substr(1)))href=hash"><i class="icon fa-arrow-circle-up fa-fw" aria-hidden="true"></i></a><span class="responsive-hide">Tue Sep 09, 2025 3:09 am</span></cite>
+Just sent USD your way mikro.  I hope it didn't convert it to euros but better than a poke in the eye. <img class="smilies" src="./images/smilies/cheers.gif" width="60" height="40" alt=":cheers:" title="cheers">
+</div></blockquote>
+Much appreciated! Unfortunately it did, write me a PM if you want me to revert the payment so you can try again (sometimes one need to change the default currency in that payment screen).</div>
+
+			
+			
+									
+						
+										
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+	
+
+	<div class="action-bar bar-bottom">
+	
+			<a href="./posting.php?mode=reply&amp;t=7793&amp;sid=073275b0166b8699f58eacfaa952f930" class="button" title="Post a reply">
+							<span>Post Reply</span> <i class="icon fa-reply fa-fw" aria-hidden="true"></i>
+					</a>
+		
+		<div class="dropdown-container dropdown-button-control topic-tools">
+		<span title="Topic tools" class="button button-secondary dropdown-trigger dropdown-select">
+			<i class="icon fa-wrench fa-fw" aria-hidden="true"></i>
+			<span class="caret"><i class="icon fa-sort-down fa-fw" aria-hidden="true"></i></span>
+		</span>
+		<div class="dropdown">
+			<div class="pointer"><div class="pointer-inner"></div></div>
+			<ul class="dropdown-contents">
+																												<li>
+					<a href="./viewtopic.php?t=7793&amp;sid=073275b0166b8699f58eacfaa952f930&amp;view=print" title="Print view" accesskey="p">
+						<i class="icon fa-print fa-fw" aria-hidden="true"></i><span>Print view</span>
+					</a>
+				</li>
+											</ul>
+		</div>
+	</div>
+
+			<form method="post" action="./viewtopic.php?t=7793&amp;sid=073275b0166b8699f58eacfaa952f930">
+		<div class="dropdown-container dropdown-container-left dropdown-button-control sort-tools">
+	<span title="Display and sorting options" class="button button-secondary dropdown-trigger dropdown-select">
+		<i class="icon fa-sort-amount-asc fa-fw" aria-hidden="true"></i>
+		<span class="caret"><i class="icon fa-sort-down fa-fw" aria-hidden="true"></i></span>
+	</span>
+	<div class="dropdown hidden">
+		<div class="pointer"><div class="pointer-inner"></div></div>
+		<div class="dropdown-contents">
+			<fieldset class="display-options">
+							<label>Display: <select name="st" id="st"><option value="0" selected="selected">All posts</option><option value="1">1 day</option><option value="7">7 days</option><option value="14">2 weeks</option><option value="30">1 month</option><option value="90">3 months</option><option value="180">6 months</option><option value="365">1 year</option></select></label>
+								<label>Sort by: <select name="sk" id="sk"><option value="a">Author</option><option value="t" selected="selected">Post time</option><option value="s">Subject</option></select></label>
+				<label>Direction: <select name="sd" id="sd"><option value="a" selected="selected">Ascending</option><option value="d">Descending</option></select></label>
+								<hr class="dashed" />
+				<input type="submit" class="button2" name="sort" value="Go" />
+						</fieldset>
+		</div>
+	</div>
+</div>
+		</form>
+	
+	
+	
+			<div class="pagination">
+			9 posts
+							&bull; Page <strong>1</strong> of <strong>1</strong>
+					</div>
+	</div>
+
+
+<div class="action-bar actions-jump">
+		<p class="jumpbox-return">
+		<a href="./viewforum.php?f=20&amp;sid=073275b0166b8699f58eacfaa952f930" class="left-box arrow-left" accesskey="r">
+			<i class="icon fa-angle-left fa-fw icon-black" aria-hidden="true"></i><span>Return to “NEWS &amp; ANNOUNCEMENTS”</span>
+		</a>
+	</p>
+	
+		<div class="jumpbox dropdown-container dropdown-container-right dropdown-up dropdown-left dropdown-button-control" id="jumpbox">
+			<span title="Jump to" class="button button-secondary dropdown-trigger dropdown-select">
+				<span>Jump to</span>
+				<span class="caret"><i class="icon fa-sort-down fa-fw" aria-hidden="true"></i></span>
+			</span>
+		<div class="dropdown">
+			<div class="pointer"><div class="pointer-inner"></div></div>
+			<ul class="dropdown-contents">
+																				<li><a href="./viewforum.php?f=45&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-cat-link"> <span> GENERAL</span></a></li>
+																<li><a href="./viewforum.php?f=20&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; NEWS &amp; ANNOUNCEMENTS</span></a></li>
+																<li><a href="./viewforum.php?f=14&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; INTRODUCE YOURSELF</span></a></li>
+																<li><a href="./viewforum.php?f=32&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; SHOW US YOUR COLLECTIONS</span></a></li>
+																<li><a href="./viewforum.php?f=114&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; CHAT FORUM PUBLIC</span></a></li>
+																<li><a href="./viewforum.php?f=18&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; MEMBER BLOGS</span></a></li>
+																<li><a href="./viewforum.php?f=34&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; ATARI MUSIC NETWORK</span></a></li>
+																<li><a href="./viewforum.php?f=11&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; ATARI FOR SALE &amp; WANTED</span></a></li>
+																<li><a href="./viewforum.php?f=63&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; GENERAL FOR SALE &amp; WANTED</span></a></li>
+																<li><a href="./viewforum.php?f=90&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; EXXOS WEBSTORE INFORMATION</span></a></li>
+																<li><a href="./viewforum.php?f=101&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; NOOB QUESTIONS</span></a></li>
+																<li><a href="./viewforum.php?f=122&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; CYBER LEGENDS RETRO EVENTS</span></a></li>
+																<li><a href="./viewforum.php?f=127&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; CYBER LEGENDS 5 - 2026</span></a></li>
+																<li><a href="./viewforum.php?f=126&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; CYBER LEGENDS 4 - 2025</span></a></li>
+																<li><a href="./viewforum.php?f=125&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; CYBER LEGENDS 3 - 2024</span></a></li>
+																<li><a href="./viewforum.php?f=124&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; CYBER LEGENDS 2 - 2023</span></a></li>
+																<li><a href="./viewforum.php?f=123&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; CYBER LEGENDS 1 - The Original 2022</span></a></li>
+																<li><a href="./viewforum.php?f=46&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-cat-link"> <span> ATARI LIBRARY</span></a></li>
+																<li><a href="./viewforum.php?f=41&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; MOTHERBOARD REVISIONS</span></a></li>
+																<li><a href="./viewforum.php?f=51&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; STE</span></a></li>
+																<li><a href="./viewforum.php?f=52&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; STF</span></a></li>
+																<li><a href="./viewforum.php?f=53&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; ST</span></a></li>
+																<li><a href="./viewforum.php?f=54&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; MEGA STE</span></a></li>
+																<li><a href="./viewforum.php?f=55&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; MEGA ST</span></a></li>
+																<li><a href="./viewforum.php?f=56&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; STFM</span></a></li>
+																<li><a href="./viewforum.php?f=57&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; 8 BIT</span></a></li>
+																<li><a href="./viewforum.php?f=58&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; TT</span></a></li>
+																<li><a href="./viewforum.php?f=59&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Falcon 030</span></a></li>
+																<li><a href="./viewforum.php?f=60&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; STACY</span></a></li>
+																<li><a href="./viewforum.php?f=36&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; MAGAZINES</span></a></li>
+																<li><a href="./viewforum.php?f=42&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; BENCHMARKS</span></a></li>
+																<li><a href="./viewforum.php?f=62&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; 3D MODELS</span></a></li>
+																<li><a href="./viewforum.php?f=47&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-cat-link"> <span> OTHER / GENERAL HARDWARE</span></a></li>
+																<li><a href="./viewforum.php?f=44&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; 8 BIT CORNER</span></a></li>
+																<li><a href="./viewforum.php?f=30&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; DISPLAYS &amp; CONVERTERS</span></a></li>
+																<li><a href="./viewforum.php?f=35&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; ELECTRONICS</span></a></li>
+																<li><a href="./viewforum.php?f=105&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; MSX 8 BIT COMPUTER</span></a></li>
+																<li><a href="./viewforum.php?f=113&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; OTHER 680x0</span></a></li>
+																<li><a href="./viewforum.php?f=116&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; VINTAGE GEAR ZONE</span></a></li>
+																<li><a href="./viewforum.php?f=48&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-cat-link"> <span> ATARI 16 / 32 BIT</span></a></li>
+																<li><a href="./viewforum.php?f=49&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; HARDWARE</span></a></li>
+																<li><a href="./viewforum.php?f=23&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; HARDWARE ISSUES</span></a></li>
+																<li><a href="./viewforum.php?f=29&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; HARDWARE DISCUSSIONS</span></a></li>
+																<li><a href="./viewforum.php?f=3&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; BOOSTERS</span></a></li>
+																<li><a href="./viewforum.php?f=82&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; SEC 64MHZ BOOSTER</span></a></li>
+																<li><a href="./viewforum.php?f=24&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; STE V1 SERIES 32MHz BOOSTER</span></a></li>
+																<li><a href="./viewforum.php?f=6&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; ST 16MHz V2.X SERIES BOOSTERS (Discontinued 2020)</span></a></li>
+																<li><a href="./viewforum.php?f=4&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; ST V1 16MHz BOOSTER (Discontinued 2015)</span></a></li>
+																<li><a href="./viewforum.php?f=5&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; ST 16MHz V1.5 BOOSTER (Discontinued 2015)</span></a></li>
+																<li><a href="./viewforum.php?f=37&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; STE V2 BOOSTER</span></a></li>
+																<li><a href="./viewforum.php?f=71&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; STE / MSTE 68020 booster</span></a></li>
+																<li><a href="./viewforum.php?f=8&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; EVERYTHING ELSE</span></a></li>
+																<li><a href="./viewforum.php?f=94&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; ST536 030 ST ACCELERATOR</span></a></li>
+																<li><a href="./viewforum.php?f=104&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; ST 16MHz BOOSTER 2021</span></a></li>
+																<li><a href="./viewforum.php?f=112&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; DSTB1 &amp; DFB1 booster by BadWolf</span></a></li>
+																<li><a href="./viewforum.php?f=9&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; PSU (power supplies)</span></a></li>
+																<li><a href="./viewforum.php?f=10&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; RTC (Real time clock)</span></a></li>
+																<li><a href="./viewforum.php?f=12&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; FLOPPY DRIVES KITS &amp; UPGRADES</span></a></li>
+																<li><a href="./viewforum.php?f=15&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; RAM UPGRADES</span></a></li>
+																<li><a href="./viewforum.php?f=16&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; ROM UPGRADES</span></a></li>
+																<li><a href="./viewforum.php?f=26&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; PeST MOUSE INTERFACE</span></a></li>
+																<li><a href="./viewforum.php?f=22&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; BLAST FROM THE PAST</span></a></li>
+																<li><a href="./viewforum.php?f=81&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; HARD DRIVES</span></a></li>
+																<li><a href="./viewforum.php?f=27&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; HARDWARE ESSENTIALS</span></a></li>
+																<li><a href="./viewforum.php?f=119&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; RAVEN 060 - A homemade Atari-like computer</span></a></li>
+																<li><a href="./viewforum.php?f=120&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; RAVEN 060 - USER BUILDS</span></a></li>
+																<li><a href="./viewforum.php?f=50&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; SOFTWARE</span></a></li>
+																<li><a href="./viewforum.php?f=21&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; STOS</span></a></li>
+																<li><a href="./viewforum.php?f=39&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; SOFTWARE PROGRAMMING &amp; DISCUSSION</span></a></li>
+																<li><a href="./viewforum.php?f=61&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; GAME ZONE</span></a></li>
+																<li><a href="./viewforum.php?f=19&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; ATARI ST REMAKE PROJECT</span></a></li>
+																<li><a href="./viewforum.php?f=77&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; ALPHA DEVELOPMENT INFO</span></a></li>
+																<li><a href="./viewforum.php?f=64&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; ALPHA USER BUILDS</span></a></li>
+																<li><a href="./viewforum.php?f=73&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; H4 MONGREL EDITION DEVELOPMENT &amp; INFO</span></a></li>
+																<li><a href="./viewforum.php?f=78&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; MONGREL H4 USER BUILDS</span></a></li>
+																<li><a href="./viewforum.php?f=80&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; FPGA DEVELOPMENT</span></a></li>
+																<li><a href="./viewforum.php?f=89&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; H5 Phoenix Platform Edition</span></a></li>
+																<li><a href="./viewforum.php?f=99&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; H5 A3 USER BUILDS</span></a></li>
+																<li><a href="./viewforum.php?f=100&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; H5 B1 USER BUILDS</span></a></li>
+																<li><a href="./viewforum.php?f=107&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; H5 C1 USER BUILDS</span></a></li>
+																<li><a href="./viewforum.php?f=121&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; H5 C5B USER BUILDS</span></a></li>
+																<li><a href="./viewforum.php?f=92&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; LEGACY BOARD</span></a></li>
+																<li><a href="./viewforum.php?f=17&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; TWEAKS &amp; FIXES</span></a></li>
+																<li><a href="./viewforum.php?f=91&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; BASIC TROUBLESHOOTING</span></a></li>
+																<li><a href="./viewforum.php?f=106&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; PHOENIX ZONE</span></a></li>
+																<li><a href="./viewforum.php?f=83&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-cat-link"> <span> AMIGA</span></a></li>
+																<li><a href="./viewforum.php?f=65&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Terriblefire's channel</span></a></li>
+																<li><a href="./viewforum.php?f=66&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; TF520 (OBSOLETE)</span></a></li>
+																<li><a href="./viewforum.php?f=67&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; TF530</span></a></li>
+																<li><a href="./viewforum.php?f=68&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; TF534 (OBSOLETE)</span></a></li>
+																<li><a href="./viewforum.php?f=69&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; TF328 (OBSOLETE)</span></a></li>
+																<li><a href="./viewforum.php?f=70&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; TF330</span></a></li>
+																<li><a href="./viewforum.php?f=72&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; DiagROM</span></a></li>
+																<li><a href="./viewforum.php?f=75&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; TF360</span></a></li>
+																<li><a href="./viewforum.php?f=76&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; TF536</span></a></li>
+																<li><a href="./viewforum.php?f=103&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; TF CD32 Riser</span></a></li>
+																<li><a href="./viewforum.php?f=117&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; TFMSX</span></a></li>
+																<li><a href="./viewforum.php?f=84&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; AMIGA HARDWARE HELP</span></a></li>
+																<li><a href="./viewforum.php?f=86&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; AMIGA MEMBER BLOGS</span></a></li>
+																<li><a href="./viewforum.php?f=87&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; AMIGA FOR SALE</span></a></li>
+																<li><a href="./viewforum.php?f=88&amp;sid=073275b0166b8699f58eacfaa952f930" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; AMIGA SOFTWARE</span></a></li>
+											</ul>
+		</div>
+	</div>
+
+	</div>
+
+
+
+
+		<!-- Cleantalk -->
+<script type="text/javascript">
+			var ct_cookie_name = "ct_checkjs",
+				ct_cookie_value = "785551112";
+</script>
+<!--/Cleantalk -->	</div>
+
+
+<div id="page-footer" class="page-footer" role="contentinfo">
+	<div class="navbar" role="navigation">
+	<div class="inner">
+
+	<ul id="nav-footer" class="nav-footer linklist" role="menubar">
+		<li class="breadcrumbs">
+									<span class="crumb"><a href="./index.php?sid=073275b0166b8699f58eacfaa952f930" data-navbar-reference="index"><i class="icon fa-home fa-fw" aria-hidden="true"></i><span>Board index</span></a></span>					</li>
+		
+				<li class="rightside">All times are <span title="Europe/London">UTC+01:00</span></li>
+							<li class="rightside">
+				<a href="/forum/app.php/user/delete_cookies?sid=073275b0166b8699f58eacfaa952f930" data-ajax="true" data-refresh="true" role="menuitem">
+					<i class="icon fa-trash fa-fw" aria-hidden="true"></i><span>Delete cookies</span>
+				</a>
+			</li>
+														</ul>
+
+	</div>
+</div>
+
+	<div class="copyright">
+				<p class="footer-row">
+			<span class="footer-copyright">Powered by <a href="https://www.phpbb.com/">phpBB</a>&reg; Forum Software &copy; phpBB Limited</span>
+		</p>
+						<p class="footer-row" role="menu">
+			<a class="footer-link" href="./ucp.php?mode=privacy&amp;sid=073275b0166b8699f58eacfaa952f930" title="Privacy" role="menuitem">
+				<span class="footer-link-text">Privacy</span>
+			</a>
+			|
+			<a class="footer-link" href="./ucp.php?mode=terms&amp;sid=073275b0166b8699f58eacfaa952f930" title="Terms" role="menuitem">
+				<span class="footer-link-text">Terms</span>
+			</a>
+		</p>
+					</div>
+
+	<div id="darkenwrapper" class="darkenwrapper" data-ajax-error-title="AJAX error" data-ajax-error-text="Something went wrong when processing your request." data-ajax-error-text-abort="User aborted request." data-ajax-error-text-timeout="Your request timed out; please try again." data-ajax-error-text-parsererror="Something went wrong with the request and the server returned an invalid reply.">
+		<div id="darken" class="darken">&nbsp;</div>
+	</div>
+
+	<div id="phpbb_alert" class="phpbb_alert" data-l-err="Error" data-l-timeout-processing-req="Request timed out.">
+		<a href="#" class="alert_close">
+			<i class="icon fa-times-circle fa-fw" aria-hidden="true"></i>
+		</a>
+		<h3 class="alert_title">&nbsp;</h3><p class="alert_text"></p>
+	</div>
+	<div id="phpbb_confirm" class="phpbb_alert">
+		<a href="#" class="alert_close">
+			<i class="icon fa-times-circle fa-fw" aria-hidden="true"></i>
+		</a>
+		<div class="alert_text"></div>
+	</div>
+</div>
+
+</div>
+
+<div>
+	<a id="bottom" class="anchor" accesskey="z"></a>
+	</div>
+
+<script src="./assets/javascript/jquery-3.7.1.min.js?assets_version=567"></script>
+<script src="./assets/javascript/core.js?assets_version=567"></script>
+
+
+<script>
+		var elonw_title = "Opens\u0020in\u0020new\u0020window";
+</script>
+											<script>
+		var vseLightbox = {};
+		vseLightbox.resizeHeight = 0;
+		vseLightbox.resizeWidth = 700;
+		vseLightbox.lightboxGal = 0;
+		vseLightbox.lightboxSig = 0;
+		vseLightbox.imageTitles = 0;
+		vseLightbox.lightboxAll = 1;
+		vseLightbox.downloadFile = 'download/file.php';
+	</script>
+
+<script src="./ext/phpbb/boardannouncements/styles/all/template/js/boardannouncements.js?assets_version=567"></script>
+<script src="./ext/cleantalk/antispam/styles/all/template/cleantalk.js?assets_version=567"></script>
+<script src="./styles/prosilver/template/forum_fn.js?assets_version=567"></script>
+<script src="./styles/prosilver/template/ajax.js?assets_version=567"></script>
+<script src="./ext/rmcgirr83/elonw/styles/all/template/js/elonw.js?assets_version=567"></script>
+<script src="./ext/vse/abbc3/styles/all/template/js/abbc3.min.js?assets_version=567"></script>
+<script src="./ext/vse/lightbox/styles/all/template/js/resizer.js?assets_version=567"></script>
+<script src="./ext/vse/lightbox/styles/all/template/lightbox/js/lightbox.min.js?assets_version=567"></script>
+
+
+<script>
+	lightbox.option({
+		'albumLabel': 'Image\u0020\u00251\u0020of\u0020\u00252'
+	});
+</script>
+
+</body>
+</html>

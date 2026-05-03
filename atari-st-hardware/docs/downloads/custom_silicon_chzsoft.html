@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<!--
+	Directive by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Recovering Atari ST ASIC designs</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+    <style type="text/css">
+      
+    </style>    		
+	</head>
+	<body>
+
+		<!-- Header -->
+			<div id="header">
+				<span class="logo icon fa-floppy-o"></span>
+				<h1>Recovering Atari ST ASIC designs</h1>
+				<p>by Christian Zietz</p>
+			</div>
+
+		<!-- Main -->
+			<div id="main">
+				<div class="box alt container">
+					<section class="feature left">
+						<img src="images/pic02.jpg" alt="" class="image" />
+						<div class="content">
+							<h3>How persistent investigation lead to schematics of Atari ST computer chips unseen for a quarter of a century.</h3>
+						</div>
+					</section>
+				</div>
+				
+				<div class="box container">
+					<h2>The source</h2>
+					<p>Readily available on the Internet<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>, there is a treasure trove of files recovered from Atari Corp. when it closed down. The accompanying readme describes it as <em>many Syquest and floppy disks that came out of Atari HQ's</em>.<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> However, most of the files are related to the Falcon030 and the Jaguar of the mid-1990s, while my primary interest in Atari computers is in the older (mid-1980s to early 1990s) ST line of machines.</p>
+					<h2>A first find ‒ A chip that was never released</h2>
+					<p>Some files in <code>Drawings\4118</code> in an obscure DWG format<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a> caught my eyes, though. They are dated October 16, 1989, and a quick glimpse with a hex editor revealed they contained information about a <em>68K Game Shifter</em> and made a reference, for example, to clock generators. I wondered, could these be schematics of an Atari ASIC (application-specific integrated circuit, also known as custom chip)? And how could I open them?</p>
+					<h2>Viewing the files</h2>
+					<p>Luckily, further browsing the data revealed in <code>Software\ST\schematic</code> an Atari program to print said DWG files. The very sparse documentation mentioned GDOS, so I installed FontGDOS, configured an HP Laserjet printer driver, setup the Steem emulator to capture printer output to a file, and proceeded to call <code>print.prg</code> with one of the drawings. To my great delight, print data in HP’s PCL format started filling the output file, so I continued to print all 30 files. GhostPCL was then helpful in converting the printout into PDF format.</p>
+					<p>And what can I say: I indeed discovered an ASIC design for a video shifter, code number ST-4118, Revision A. The ST in this case probably refers to Styra Semiconductor Corporation, Atari’s semiconductor subsidiary. The design includes blocks such as I/O, address decoding, a color palette, a DAC, and much more:</p>
+					<figure>
+					<img src="images/game_shifter.png" class="centered" />
+					</figure>
+					<p>The pinout of that <em>68K Game Shifter</em>, however, does not match the Shifter IC in any of the Atari ST computers. But incidentally, the never released <a href="https://en.wikipedia.org/wiki/Atari_Panther">Atari Panther</a> was to be a Motorola 68000 based game console. Furthermore, the <a href="https://web.archive.org/web/20200105002734/http://homecomputer.de/pages/panther.html">Panther prototype board</a> features a chip conspicuously marked 4118!</p>
+					<p>So after the cancellation of the Panther development in 1991, I may well be the first person for 25 years to be looking at the design of its shifter chip.</p>
+					<p>Note the name on the sheets: D. Renn. A <a href="http://turricanblog.blogspot.de/2016/05/atari-st-mac-killer.html">Greek blog post</a> has a photo of Douglas L. Renn with the layout of the Blitter IC, and this <a href="http://mcurrent.name/atarihistory/tramel_technology.html">history of Atari</a> tells me that Douglas L. Renn had left Commodore together with Jack Tramiel and Shiraz Shivji among others.</p>
+					<p>Also, in the directory mentioned above, there are Spice circuit simulation models, referencing IMP CMOS transistor models. IMP of course being International Microelectronic Products, Inc., known to have manufactured a multitude of IC designs for Atari.</p>
+					<h2>A bunch of floppy disks</h2>
+					<p>While this was a fascinating find, I was still more interested in Atari ST computers than in a never-finished game console. So I continued searching. The <code>Software\PC\5_25_floppy</code> directory contained six files with names starting with <code>D890905</code>, suggesting these were dated from September 1989, right before the Atari STE was released. As indicated by the directory name and confirmed by the file sizes, these were 5 1/4” HD floppy disk images, although strangely only with 79 tracks, instead of the standard 80 tracks.</p>
+					<p>The trusty hex editor showed that the files were not floppy images with an MS-DOS compatible boot sector and FAT file system, so they could not easily be extracted. But mentions of more four-digit numbers and DWG files piqued my curiosity.</p>
+					<h2>Restoring a 27-year-old backup</h2>
+					<p>Screening the floppy disk images further revealed that these were backups made with FastBack, a software for MS-DOS seemingly popular at the time<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a> and also to be found in the Atari HQ set of files. Without access to a PC with a 5 1/4” floppy drive, restoring the images proved quite a challenge, though. In DOSBox, the backup software failed even to acknowledge the existence of the emulated floppy drive onto which I had mounted the image.</p>
+					<p>For nostalgic reasons, I keep an installation of Windows 95 under Microsoft Virtual PC. A version of FastBack capable of starting from the Windows 95 DOS box was quickly obtained from the Internet. However, Virtual PC does not support 5 1/4” floppies, only the slightly less antiquated 3 1/2” ones. So I wrote a small program to convert the images into an acceptable format, simply by padding 3 sectors at the end of each track<a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a> and by adding an empty 80th track.</p>
+					<p>I loaded the first of the modified disk images into Virtual PC, started FastBack, held my breath, and hit restore. Astonishingly, the software began to restore this almost 27-year-old backup. While one of the floppies (<code>D890905A.002</code>) is missing and some sectors of the images are seemingly corrupted, I managed to extract a bunch of mostly ARC compressed files in folders with such fascinating names as <code>DWG</code> and <code>SIM</code>. Some shell scripting later, and all the data lay before me uncompressed.</p>
+					<h2>Hitting the jackpot</h2>
+					<p>The hex editor confirmed that I found data about the <em>ST MCU / GLUE COMBO</em> (as seen in the STE) and several revisions of the <em>Blitter IC</em>! It took a nerve-stretching amount of time to convert all the DWG files to PDF, as described above. But then I could finally take a look: literally hundreds of sheets of drawings with ASIC schematics, timing diagrams, etc.!</p>
+					<figure>
+					<img src="images/detail.png" class="centered" />
+					</figure>
+					<figure>
+					<img src="images/timing.png" class="centered" />
+					</figure>
+					<p>The drawings date from 1986 to 1989, contain multiple Blitter designs (code numbers TA-4021, ST-4051, ST-4082) as well as three different revisions of the STE GSTMCU (code numbers TA-4081, ST-4081), all made again by D. Renn. Maybe they are all together in a set of backup disks because he was tasked with designing the chip combining MMU, Glue, and Blitter that was later found in the Atari MegaSTE.</p>
+					<h2>There’s more...</h2>
+					<p>I still haven’t finished exploring the files. The floppy disk images also contain netlists, simulation data, and test vectors, among other things, that probably would require the original IC design software<a href="#fn6" class="footnoteRef" id="fnref6"><sup>6</sup></a> to be interpreted. And who knows what is still hidden in there?</p>
+					<h2>See for yourself</h2>
+					<p><a href="ASICs-new.zip">Download a combined archive</a> of the files that I recovered and further schematics contributed by <a href="http://www.fpgaarcade.com/">Mike from fpgaarcade.com</a>. Apart from the ASIC designs mentioned above, there is also an incomplete schematic of the Atari Sparrow (Falcon prototype), some chip designs (ST-4078, ST-4079, ST-4080) whose purpose is currently unknown, and more. A <code>README_FIRST.TXT</code> is included containing some details about the files. Also, in the meantime, I have found a way to add searchable text to the schematics, so the PDF files will gradually be updated accordingly in this archive.</p>
+					<p><a href="ASICs.zip">Download just the files that I recovered.</a> This is only a subset of the archive above, but with the original file system structure of the floppy disks preserved.</p>
+					<p><a href="console.pdf">Download the schematics of the Atari Panther console.</a> These aren't on the floppy disks but were also recently discovered in the Atari HQ set of files by me.</p>
+					<p>I am excited to see what else will come out of this discovery!</p>
+				</div>
+				
+				<footer class="major container 100% footnote">
+					<ol>
+						<li id="fn1"><p>For example, look for Atari HQ at the <a href="http://www.dev-docs.org/docs/">Atari Document Archive</a>.<a href="#fnref1">↩</a></p></li>
+						<li id="fn2"><p>Read more about it <a href="http://www.yaronet.com/topics/22176-atari-hq-1-cd">in this forum post</a>.<a href="#fnref2">↩</a></p></li>
+						<li id="fn3"><p>It is <strong>not</strong> the AutoCAD format with the same extension. These files were created with a design software called <a href="https://web.archive.org/web/20181106123147/http://www.swtpc.com/mholley/PLD_History/CHM/FutureNet_Artifacts.pdf">FutureNet DASH</a>, a popular schematic editor in the 1980s.<a href="#fnref3">↩</a></p></li>
+						<li id="fn4"><p>Wikipedia even has <a href="https://en.wikipedia.org/wiki/FastBack">an article about FastBack</a>.<a href="#fnref4">↩</a></p></li>
+						<li id="fn5"><p>5 1/4” HD floppies have 15 sectors per track, 3 1/2” HD floppies have 18 sectors per track.<a href="#fnref5">↩</a></p></li>
+						<li id="fn6"><p>The files suggest that Atari/Styra used Silos and Ikos software.<a href="#fnref6">↩</a></p></li>
+					</ol>
+				</footer>
+
+			</div>
+-->
+		<!-- Footer -->
+			<div id="footer">
+				<div class="container 75%">
+
+					<ul class="copyright">
+						<li>&copy <a href="https://www.chzsoft.de/site/welcome/">Christian Zietz</a></li><li>Last update: 2022-01-10</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li><li><a href="http://fontawesome.io">Font Awesome</a> by Dave Gandy</li>
+					</ul>
+
+				</div>
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/skel.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

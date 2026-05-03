@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="ROBOTS" content="INDEX, FOLLOW" />
+
+  <title>Building an Atari ST - My stuff</title>
+  <meta name="description" lang="fr" content="This is the first article of a series I am writing about a home project I started in late 2019 : implementing an Atari ST on a FPGA board. Edit: The following articles on this" />
+  <meta name="copyright" content="" />
+  <meta name="author" content="François Galea" />
+  <meta name="date" content="2020-10-09T22:05:00+01:00" />
+
+  <link rel="schema.dc" href="http://purl.org/dc/elements/1.1/" />
+  <meta property="dc.title" content="Building an Atari ST" />
+  <meta property="dc.description" lang="fr" content="This is the first article of a series I am writing about a home project I started in late 2019 : implementing an Atari ST on a FPGA board. Edit: The following articles on this" />
+  <meta property="dc.creator" content="François Galea" />
+  <meta property="dc.language" content="fr" />
+  <meta property="dc.publisher" content="" />
+  <meta property="dc.rights" content="" />
+  <meta property="dc.date" content="2020-10-09T22:05:00+01:00" />
+  <meta property="dc.type" content="text" />
+  <meta property="dc.format" content="text/html" />
+
+  <link rel="top" href="https://zerkman.sector1.fr/index.php?" title="Home" />
+  <link rel="contents" href="https://zerkman.sector1.fr/index.php?archive" title="Archives" />
+  
+  <link rel="next" href="https://zerkman.sector1.fr/index.php?post/2025/08/11/Shifter-Inside-v1.0"
+  title="Shifter Inside v1.0" />
+
+  <link rel="prev" href="https://zerkman.sector1.fr/index.php?post/2018/11/08/We-accidentally-your-Oculus"
+  title="We accidentally your Oculus" />
+
+  <link rel="alternate" type="application/atom+xml" title="Atom 1.0" href="https://zerkman.sector1.fr/index.php?feed/atom" />
+
+  <link rel="preload" href="/themes/graylvetica/style.css" as="style">
+<link rel="stylesheet" type="text/css" href="/themes/graylvetica/style.css" media="screen">
+<link rel="stylesheet" type="text/css" href="https://zerkman.sector1.fr/index.php?pf=print.css" media="print">
+  <link rel="preload" href="https://zerkman.sector1.fr/index.php?pf=jquery/3.7.1/jquery.js" as="script">
+  <script src="https://zerkman.sector1.fr/index.php?pf=jquery/3.7.1/jquery.js"></script>
+<link rel="preload" href="https://zerkman.sector1.fr/index.php?pf=util.js" as="script">
+  <link rel="preload" href="https://zerkman.sector1.fr/index.php?pf=legacy.js" as="script">
+  <script src="https://zerkman.sector1.fr/index.php?pf=legacy.js"></script>
+<script src="https://zerkman.sector1.fr/index.php?pf=util.js"></script>
+
+
+<link rel="stylesheet" href="https://zerkman.sector1.fr/index.php?pf=public.css" type="text/css" media="screen">
+<meta name="tdm-reservation" content="1">
+
+
+  <script type="text/javascript" src="https://zerkman.sector1.fr/index.php?pf=post.js"></script>
+  <script type="text/javascript">
+  //<![CDATA[
+  var post_remember_str = 'Remember me on this blog';
+  //]]>
+  </script>
+</head>
+
+<body class="dc-post">
+<div id="page">
+
+
+<div id="top" role="banner">
+  <h1><span><a href="https://zerkman.sector1.fr/index.php?">My stuff</a></span></h1>
+
+  </div>
+<p id="prelude" role="navigation"><a href="#main">To content</a> |
+  <a href="#blognav">To menu</a> |
+  <a href="#search">To search</a></p>
+
+
+<div id="wrapper">
+
+<div id="main" role="main">
+  <div id="content">
+  
+  <p id="navlinks">
+  <a href="https://zerkman.sector1.fr/index.php?post/2018/11/08/We-accidentally-your-Oculus"
+  title="We accidentally your Oculus" class="prev">&#171; We accidentally your Oculus</a>
+   <span>-</span> <a href="https://zerkman.sector1.fr/index.php?post/2025/08/11/Shifter-Inside-v1.0"
+  title="Shifter Inside v1.0" class="next">Shifter Inside v1.0 &#187;</a>
+  </p>
+  
+  <div id="p39" class="post" role="article">
+    <h2 class="post-title">Building an Atari ST</h2>
+    
+    <ul class="post-meta">
+      <li class="post-date">Friday  9 October 2020</li>
+      <li class="post-link"><a href="https://zerkman.sector1.fr/index.php?post/2020/10/09/Building-an-Atari-ST">Permalink</a></li>
+      <li class="post-author">By François Galea</li>
+      
+            <li class="post-tags">Tags      <a href="https://zerkman.sector1.fr/index.php?tag/atari" rel="tag">atari</a>,                         <a href="https://zerkman.sector1.fr/index.php?tag/fpga" rel="tag">fpga</a>,                         <a href="https://zerkman.sector1.fr/index.php?tag/oldschool" rel="tag">oldschool</a>,                         <a href="https://zerkman.sector1.fr/index.php?tag/self%20project" rel="tag">self project</a>      </li>          </ul>
+
+    
+          <div class="post-excerpt"><a href="/public/DSC02540.JPG" title="DSC02540.JPG, oct. 2020"><figure class="media-center"><img src="/public/.DSC02540_m.jpg" alt="DSC02540.JPG, oct. 2020" title="DSC02540.JPG, oct. 2020"><figcaption>                               </figcaption></figure></a><p>This is the first article of a series I am writing about a home project I started in late 2019 : implementing an Atari ST on a FPGA board.</p>
+
+
+<p><strong>Edit:</strong> The following articles on this project are on the <a href="https://zest.sector1.fr/" hreflang="en" title="zeST home page">project's website</a>.</p></div>
+        
+    <div class="post-content"><p>I have been a programming enthusiast since quite some time now. I have been programming many kinds of old, modern computers and anything in-between, but to me the most enthusiastic times where when I was programming on the Atari ST and Falcon computers, mostly demo effects and tools, but also desktop utilities. In the recent years I have mostly been focusing my projects towards the Atari ST, as it still is the machine I have fun hacking on.</p>
+
+
+<p>When starting new projects I like to do stuff I have never done before, and I seldom (if not never) reuse the same pieces of code. I also did quite a bunch of Atari-ST demoscene-related stuff, like hicolor image encoding with MPP and some experiments on anaglyphic stereoscopic 3D. In the first half of 2019, after the release of "We accidentally your Oculus", I have been in a non-productive mood, with a lack of inspiration about anything new to do on ST machines.</p>
+
+
+<p>Besides being a software programmer, I also have basic knowledge in electronics, thanks to my degree studies, and more recently, in 2017 I had a one week training session on FPGA programming. It was using Xilinx chips programmed in the VHDL hardware design language.</p>
+
+
+<p>Since I was not inspired in starting a new software project, and I wanted to practice and improve my skills in VHDL and hardware design, I decided to start a hardware project. Also, I wanted a project that is challenging and motivating enough. I could not find a better idea than trying to re-implement the dream machine, the Atari ST!</p>
+
+
+<p>If you do not know what a FPGA is, just consider it is a chip that contains a lot of configurable logic, fast memory (although limited in size) and arithmetic blocks. The interconnection between those blocks is configurable too, so you can implement any logic function, state machine or anything you would have done using classical logic chips and wires. The difference is that instead of a soldering iron, you use a computer to describe your logic design in a specific hardware description language, namely Verilog or VHDL. Those languages are the very same that are used for designing modern processor architectures, and FPGAs are typically used for early prototyping new processor designs. So you really can consider FPGA programming as hardware development. This has nothing to do with software emulation: emulators are software programs that implement some kind of hardware environements as accurately as possible, while on a FPGA you directly have the hardware. On a FPGA, you can replicate some hardware  that is identical to the original to the transistor level, even if you generally don't need to, as you only want it to behave the same as the original, regardless on how it is implemented internally. A typical software emulator will put more stress on the CPU when more accuracy is required. There is no such notion of "CPU load" on a FPGA. The limit is more about the quantity of logic resources you want to use compared to those available on the FPGA.</p>
+
+
+<p>I am perfectly aware that there already are hardware implementations of the Atari ST available, even as open source. My project is more for me to gain experience on how to build a computer on top of an existing FPGA-based platform, using only the same standard components than those that were available when the Atari engineers started to create the ST. So I chose not to inspire from those open source projects, not even reading any piece of source code, and do everything my own way. One of those projects, <a href="https://www.atari-forum.com/viewtopic.php?f=28&amp;t=34554" hreflang="en">FX CAST</a>, a MiSTer core by Jorge Cwik aka Ijor, even has achieved perfect cycle accuracy. So I’m really not doing this work as a concurrent but more like as a weekend hobbyist having fun with FPGAs. If you want hardcore cycle accurate stuff, get a MiSTer and use FX CAST. However, I do plan to achieve quite an accurate reproduction of the ST hardware, so in the end it could get close to cycle accuracy, but I am making no promises.</p>
+
+
+<p>As I already had experience with Xilinx FPGAs, I wanted the board for my project to feature such a chip. Also, while I wanted to emulate the internals of the ST, I did not want to provide hardware compatibility with the ancient peripherals like the good old Atari mouse, joysticks, serial and parallel ports, scart monitors etc. I just don’t need them. I do not own a CRT monitor nor a matrix ribbon printer anymore. The peripherals I want to use are USB keyboards, mice, game controllers, and HDMI screens. So I needed a board with all the necessary controllers and connectors, and a CPU to run drivers for USB devices and provide some emulation such that the implemented ST "sees" a real ST mouse, a real ST keyboard etc. The cheapest board I could find is the <a href="http://www.myirtech.com/list.asp?id=502">MYIR Z-Turn board</a>, which is a small board featuring the Xilinx Zynq chip, containing both FPGA programmable logic and two ARM cores that can run Linux, one gigabyte of DDR3 memory, a HDMI display controller that can be directly handled by the FPGA logic, USB, Ethernet, a SD-card drive, everything I needed, with official prices varying from $99 to $119, depending from the used version of the Zynq chip. So I bought the version with the Zynq 7020 chip, the one with the most FPGA resources available. This board is relatively feature-similar with the <a href="https://www.terasic.com.tw/cgi-bin/page/archive.pl?Language=English&amp;No=1046">DE10-nano</a> board, which forms the basis of the MiSTer project. The main difference is the DE10-nano features a FPGA from Altera (now Intel) and I am not familiar with those, and the associated development tools.</p>
+
+
+<p>One of the major components I based my project on is <a href="https://github.com/ijor/fx68k">fx68k</a>, the open source core by Ijor. It is a cycle-exact implementation of the Motorola 68000 processor that he uses as the basis of his FX CAST core. Using it is exactly like working with the real thing, just like the Atari engineers building the ST around the 68000 chip. This is the most important part as it has access, directly or indirectly to every other chip of the machine. Another open source core I used is for the ACIAs, two chips which enable serial communication, one for the MIDI ports, and the other for the internal serial link between the mainboard and the keyboard processor. A last open source core I used is for the keyboard processor itself, the Hitachi HD6301 microcontroller. All the rest is implemented by myself.</p>
+
+
+<p>I also based my project on the available schematics of the ST that can be found on the web. I try to stay as close as possible to the schematics in my design. So it mostly features the same chips, with the same pins, and the same signals between chips. For the off-the-shelf chips that the Atari enginers used in the ST design, the freely-available datasheets were very useful to make a re-implementation possible. However, for the custom chips specifically created for the ST (namely : the GLUE, MMU, Shifter and DMA chips), I mostly had to make a guess on how they worked. The best indices I had were their pins, determining which information the chips had access to, and also  which information the chips had not access to, which determine what the chip may be able to do and what it can not do. For MMU and Shifter, they are in a rather finished status, even though there might remain some bugs that need fixing. GLUE is partly implemented, but some parts are still missing because I haven’t implemented yet some ST functionalities. DMA is currently an empty shell, as I have not implemented the storage devices it controls yet. The general idea on how I designed those custom chips is by trying to implement each of the functionalities in the simplest possible way. I guess by doing this I get as close as I can to the real way those things work. The Atari engineers would probably have done the same or similar way, to minimize the required logic.</p>
+
+
+<figure class="media-center"><img src="/public/.DSC02541_m.jpg" alt="DSC02541.JPG, oct. 2020" title="DSC02541.JPG, oct. 2020"><figcaption>                               </figcaption></figure><p>So, I have started the zeST project. You can watch its progress by following the <a href="https://github.com/zerkman/zest">project page on github</a>. The source code is distributed under the GPLv3 free software license. Currently, the working parts are :</p>
+<ul>
+<li>the bus, with full integration of che cpu, mmu and memory implemented using the onboard DDR memory</li>
+<li>the video output, with integrated specific scan doubler to enable the display of the PAL/NTSC outputs on HDMI monitors</li>
+<li>interrupts</li>
+<li>a complete implementation of the Atari keyboard, including the onboard HD6301 microcontroller, also controlling the mouse and joysticks</li>
+</ul>
+
+
+<p>What is currently not working are storage devices (floppy, hard disk) and sound. Some external IO do not and will not be implemented (serial, parallel ports). MIDI might be implemented using USB adapters, but a bit of investigation is still required.</p>
+
+
+<p>That's all for the introduction of this series! In the next articles I will focus on different parts of the project, what were the ideas behind the implementation of this or that feature. Stay tuned, see you soon!</p>
+
+
+<p>​<strong>Edit:</strong> The following articles on this project are on the <a href="https://zest.sector1.fr/" hreflang="en" title="zeST home page">project's website</a>.</p></div>
+
+      </div>
+
+  
+
+    
+  
+    
+    
+    </div>
+</div> <!-- End #main -->
+
+<div id="sidebar" role="complementary">
+  <div id="blognav">
+    <div class="widget" id="search"><h2><label for="q">Search</label></h2><form action="https://zerkman.sector1.fr/index.php?" method="get" name="q-form" id="q-form" role="search">
+<p><input type="search" name="q" id="q" value="" maxlength="255" placeholder="" size="10" aria-label="Search"> <input type="submit" name="q-submit" id="q-submit" value="ok" class="submit" title="Search"></p>
+</form>
+</div>
+  </div> <!-- End #blognav -->
+  
+  <div id="blogextra">
+    <div class="widget links" ><h2>Links</h2><ul><li><a href="https://pouet.chapril.org/@zerkman" hreflang="en" rel="me">Mastodon / Fediverse account</a></li>
+<li><a href="https://zest.sector1.fr" hreflang="en" title="My project of a FPGA clone of an Atari ST">zeST homepage</a></li>
+<li><a href="https://codeberg.org/zerkman" hreflang="en" title="Where my different open-source projects are stored">Git repositories</a></li>
+</ul>
+</div>
+  </div> <!-- End #blogextra -->
+</div>
+
+</div> <!-- End #wrapper -->
+
+<div id="footer" role="contentinfo">
+  <p>Powered by <a href="https://dotclear.org/">Dotclear</a></p>
+</div>
+
+</div> <!-- End #page -->
+</body>
+</html>

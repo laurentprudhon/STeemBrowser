@@ -1,0 +1,115 @@
+# Atari ST / STE Hardware - Download Plan
+# =========================================
+# Components documented in the wiki but missing reference manuals/datasheets
+#
+# Format: Filename | Component | Source URL (target / search query) | Priority | Notes
+#
+# ─────────────────────────────────────────────────────────────────────────
+
+## 1. CPU
+
+DOC-001 | Motorola MC68000 Datasheet | NXP MC68000UM.pdf (datasheet PDF) | HIGH | Official datasheet - 68000 architecture, pinout, timing
+DOC-001-B | Motorola MC68000 Programmer's Reference | st_prog_guide_1.htm (already downloaded per README) | DONE | Listed in README as docs/st_prog_guide_1.htm
+
+## 2. Standard Logic ICs (74xx series - NOT currently documented)
+
+DOC-010 | 74LS245 Octal Bus Transceiver datasheet | TI/NXP SN75174/74LS245 PDF | HIGH | Motherboard IC1 - data bus transceiver
+DOC-011 | 74LS174 Hex D-Type Flip-Flop datasheet | TI SN54174/74LS174 PDF | HIGH | Motherboard IC2 - address latch
+DOC-012 | 74LS05 Hex Inverter (Open Collector) datasheet | TI SN74LS05 PDF | HIGH | Address decoding, sync signals
+DOC-013 | 74LS04 Hex Inverter datasheet | TI SN74LS04 PDF | HIGH | Signal inversion
+DOC-014 | 74LS244 Octal Buffer datasheet | TI SN74LS244 PDF | HIGH | Address bus buffering
+DOC-015 | 74LS374 Octal D-Type Latch datasheet | TI SN74LS374 PDF | HIGH | Address/data multiplexing
+DOC-016 | 74LS138 3-to-8 Decoder datasheet | TI SN74LS138 PDF | HIGH | CS1/CS2 generation
+DOC-017 | 74LS175 Quad D-Type Latch datasheet | TI SN74LS175 PDF | HIGH | Various latching functions
+DOC-018 | 74LS163 4-Bit Binary Counter datasheet | TI SN74LS163 PDF | HIGH | RAM refresh counter
+DOC-019 | 74HC174 Hex Latch datasheet (STe) | TI SN74HC174 PDF | HIGH | STe address data
+DOC-020 | 75173 Octal Bus Transceiver datasheet | SN75173 PDF | MEDIUM | Alternative/related to 74LS245
+
+## 3. Memory ICs (NOT currently documented)
+
+DOC-030 | Intel 414616 64K DRAM datasheet | Intel/Mostek MK4146 PDF | HIGH | ST RAM - 64K x 1 DRAM
+DOC-031 | Intel 41256 256K DRAM datasheet | NEC uPD41256 PDF | HIGH | ST RAM - 256K x 1 DRAM
+DOC-032 | Intel 27256 EPROM datasheet | Intel D27256 PDF | HIGH | TOS ROM - 32K x 8 UV EPROM
+
+## 4. Clock/Resonator Components
+
+DOC-040 | Seiko EPSON XC3245/3215 RTC Oscillator | Epson XC3215 PDF | LOW | 32.768 kHz RTC crystal (CRY1)
+DOC-041 | 8 MHz Crystal oscillator specs | Murata/Citizen 8MHz xtal PDF | LOW | Main system clock (Y1)
+DOC-042 | 32 MHz Crystal oscillator specs | 32MHz xtal PDF | LOW | Shifter pixel clock (Y2)
+
+## 5. Power Management (NOT currently documented)
+
+DOC-050 | CA3007H Voltage Regulator datasheet | Intersil/RCA CA3007 PDF | HIGH | +8V/+22V regulator in external PSU
+DOC-051 | SMPS controller (Mitsumi SR98 / ASTEC ASP34) | Service manual PSU section | LOW | Internal SMPS of 1040STF
+DOC-052 | Bridge rectifier specs | General bridge rectifier PDF | LOW | AC to DC conversion in PSU
+
+## 6. Atari Service Manuals & Schematics (NOT currently documented)
+
+DOC-060 | Atari 520ST/1040ST Field Service Manual (C070173 rev D) | PDF from Atari doc archive / Internet Archive | CRITICAL | Complete motherboard schematics + parts list
+DOC-061 | Atari 520ST Schematic (1985) (C070173) | PDF from Internet Archive | CRITICAL | Board-level schematic
+DOC-062 | Atari 1040ST Schematic (C070787 rev C) | PDF from Internet Archive / elektrotanya | CRITICAL | Board-level schematic
+DOC-063 | Atari STe 520/1040 Field Service Manual (C302481-001) | PDF from atarimuseum.de | CRITICAL | STe service manual
+DOC-064 | Atari MegaSTE Service Manual (June 1991) | PDF from Internet Archive | CRITICAL | Mega STE service manual
+DOC-065 | Atari Mega STE Schematic (1986) | PDF from Internet Archive | CRITICAL | Mega STE board schematic
+DOC-066 | Atari Mega ST Field Service Manual (C399010-001) | PDF from Internet Archive | CRITICAL | Mega ST service manual
+DOC-067 | Atari Mega ST Schematic | PDF from Internet Archive | MEDIUM | Mega ST board schematic
+
+## 7. Atari Custom ASIC Reference (partial)
+
+DOC-070 | Atari ST Bus Doc (Atari ST Bus information) | info-coach.fr Atari ST bus doc PDF | MEDIUM | Already partially covered in references
+DOC-071 | Synergy GM8002/GM8011 datasheet (possible Glue/MMU OEM) | N/A - proprietary | LOW | Possible alternative chip manufacturers
+DOC-072 | Atari GST MCU C302183 technical reference | AtariAge forums / info-coach | MEDIUM | STe custom chip - no public datasheet exists
+DOC-073 | Atari GST Shifter C029145 technical reference | AtariAge forums / info-coach | MEDIUM | STe shifter - no public datasheet exists
+DOC-074 | Atari SH2 C301842 technical reference | AtariAge forums / info-coach | MEDIUM | Mega STE chip - no public datasheet exists
+
+## 8. I/O Interface Chips (NOT currently documented)
+
+DOC-080 | ST ACIA (MC6850) pinout - second ACIA for IKBD serial | MC6850.pdf (already downloaded per README) | DONE | Already downloaded
+DOC-081 | Centronics parallel controller IC (if separate) | N/A - likely hardwired through MFP/PSG | LOW | Parallel port controlled via MFP/PSG GPIO
+DOC-082 | MIDI opto-isolator (6N138 or similar) datasheet | 6N138 PDF | LOW | MIDI port isolation
+
+## 9. Audio/Video Specific
+
+DOC-090 | LM1881 Video Sync Separator datasheet (STe genlock) | TI LM1881 PDF | LOW | Used for schd/composite genlock
+DOC-091 | RF modulator IC (if known part number) | N/A - custom Atari IC | LOW | No public datasheet exists
+
+## 10. Reference Documents
+
+DOC-100 | Atari ST Internals 3rd Edition (already) | Atari-ST-Internals.pdf (already downloaded per README) | DONE | Listed in README
+DOC-101 | The Little Black Bit Book / Atari Compendium (already) | Bitbook2.pdf (already downloaded per README) | DONE | Listed in README
+DOC-102 | Atari Master Memory Map (already) | Master-Memory-Map.pdf (already downloaded per README) | DONE | Listed in README
+DOC-103 | ST fd/hd programming guide (already) | FD-HD_Programming.pdf (already downloaded per README) | DONE | Listed in README
+DOC-104 | Yamaha BLiTTER manual (already) | BLiTT_1-25-1990.pdf (already downloaded per README) | DONE | Listed in README
+DOC-105 | Atari ST Boot/BIOS source code | Retrovirology.ca reference | LOW | Software-side documentation
+
+# ─────────────────────────────────────────────────────────────────────────
+# Already Downloaded (per README.md External Documents table):
+#
+# | mc68901_mfp_datasheet.pdf      | Motorola MC68901 MFP Datasheet              |
+# | mc6850_acia_datasheet.pdf      | Motorola MC6850 ACIA Datasheet              |
+# | ym2149_psg_datasheet.pdf       | Yamaha YM2149 PSG Datasheet                 |
+# | wd1772_fd_controller.pdf       | Western Digital WD1772 FDC Specification     |
+# | mc146818a_rtc_datasheet.pdf    | Motorola MC146818A RTC Datasheet             |
+# | atari_st_internals.pdf         | Atari ST Internals (3rd Edition)             |
+# | st_programmer_reference.pdf    | Atari ST Programmer's Reference Guide        |
+# | blitter_manual.pdf             | Yamaha/Atari BLiTTER Manual                  |
+# | little_black_bit_book.pdf      | The Little Black Bit Book                     |
+# | master_memory_map.pdf          | Atari Master Memory Map                       |
+# | fd_hd_programming_guide.pdf    | ST fd/hd Programming Guide                    |
+#
+# ─────────────────────────────────────────────────────────────────────────
+# NOTES:
+#
+# - GST MCU (C302183), GST Shifter (C029145), and SH2 (C301842) are proprietary
+#   Atari STe/Mega STE chips with NO public datasheets. Best sources are:
+#   * AtariAge forums reverse-engineering posts
+#   * Info-Coach.fr STE Hardware documentation
+#
+# - Atari service manuals and schematics are the most valuable missing documents
+#   for building a cycle-accurate emulator
+#
+# - Many 74xx TTL chips have generic datasheets from multiple manufacturers
+#   (TI, Motorola, National Semiconductor, etc.) - any major vendor's version works
+#
+# - DRAM datasheets (414616, 41256) are critical for cycle-accurate emulation
+#   as timing determines correct DRAM controller behavior

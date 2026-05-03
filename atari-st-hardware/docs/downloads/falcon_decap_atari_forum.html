@@ -1,0 +1,2093 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-gb">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>Falcon custom ICs decap and Reverse Engineering - Atari-Forum</title>
+
+	<link rel="alternate" type="application/atom+xml" title="Feed - Atari-Forum" href="/app.php/feed">	<link rel="alternate" type="application/atom+xml" title="Feed - News" href="/app.php/feed/news">		<link rel="alternate" type="application/atom+xml" title="Feed - New Topics" href="/app.php/feed/topics">	<link rel="alternate" type="application/atom+xml" title="Feed - Active Topics" href="/app.php/feed/topics_active">	<link rel="alternate" type="application/atom+xml" title="Feed - Forum - Professionals" href="/app.php/feed/forum/27">	<link rel="alternate" type="application/atom+xml" title="Feed - Topic - Falcon custom ICs decap and Reverse Engineering" href="/app.php/feed/topic/45152">	
+	<link rel="canonical" href="https://www.atari-forum.com/viewtopic.php?t=45152">
+
+<!--
+	phpBB style name: prosilver
+	Based on style:   prosilver (this is the default phpBB3 style)
+	Original author:  Tom Beddard ( http://www.subBlue.com/ )
+	Modified by:
+-->
+
+<link href="./assets/css/font-awesome.min.css?assets_version=196" rel="stylesheet">
+<link href="./styles/protari/theme/stylesheet.css?assets_version=196" rel="stylesheet">
+<link href="./styles/protari/theme/en/stylesheet.css?assets_version=196" rel="stylesheet">
+
+
+
+	<link href="./assets/cookieconsent/cookieconsent.min.css?assets_version=196" rel="stylesheet">
+
+<!--[if lte IE 9]>
+	<link href="./styles/protari/theme/tweaks.css?assets_version=196" rel="stylesheet">
+<![endif]-->
+
+	
+<link href="./ext/paybas/breadcrumbmenu/styles/all/theme/breadcrumb-menu.css?assets_version=196" rel="stylesheet" media="screen">
+<link href="./ext/phpbb/collapsiblecategories/styles/all/theme/collapsiblecategories.css?assets_version=196" rel="stylesheet" media="screen">
+<link href="./ext/vse/scrolltotop/styles/all/theme/scrolltotop.css?assets_version=196" rel="stylesheet" media="screen">
+
+
+
+</head>
+<body id="phpbb" class="nojs notouch section-viewtopic ltr ">
+
+
+<div id="wrap" class="wrap">
+	<a id="top" class="top-anchor" accesskey="t"></a>
+	<div id="page-header">
+		<div class="headerbar" role="banner">
+		    <div><a id="logo" class="logo" href="https://www.atari-forum.com" title="Atari Forum">
+					<span class="site_logo"></span>
+				</a>
+		</div>
+			<div class="inner">
+
+		<div id="site-description" class="site-description">
+				<h1>Atari-Forum</h1>
+				<p>A forum about Atari 16/32 computers and their clones.  This forum is in no way affiliated with Atari Interactive.</p>
+				<p class="skiplink"><a href="#start_here">Skip to content</a></p>
+			</div>
+
+									
+			</div>
+					</div>
+				<div class="navbar" role="navigation">
+	<div class="inner">
+
+	<ul id="nav-main" class="nav-main linklist" role="menubar">
+
+		<li id="quick-links" class="quick-links dropdown-container responsive-menu hidden" data-skip-responsive="true">
+			<a href="#" class="dropdown-trigger">
+				<i class="icon fa-bars fa-fw" aria-hidden="true"></i><span>Quick links</span>
+			</a>
+			<div class="dropdown">
+				<div class="pointer"><div class="pointer-inner"></div></div>
+				<ul class="dropdown-contents" role="menu">
+					
+					
+										<li class="separator"></li>
+
+									</ul>
+			</div>
+		</li>
+
+				<li data-last-responsive="true">
+			<a href="/app.php/help/faq" rel="help" title="Frequently Asked Questions" role="menuitem">
+				<i class="icon fa-question-circle fa-fw" aria-hidden="true"></i><span>FAQ</span>
+			</a>
+		</li>
+			<li data-last-responsive="true">
+		<a href="/app.php/rules" rel="help" title="View the Rules of this Board" role="menuitem">
+			<i class="icon fa-book fa-fw" aria-hidden="true"></i><span>Rules</span>
+		</a>
+	</li>
+				
+		</ul>
+
+	<ul id="nav-breadcrumbs" class="nav-breadcrumbs linklist navlinks" role="menubar">
+				
+		
+		<li class="breadcrumbs" itemscope itemtype="https://schema.org/BreadcrumbList">
+
+							<span class="crumb" itemtype="https://schema.org/ListItem" itemprop="itemListElement" itemscope><a itemprop="item" href="https://www.atari-forum.com" data-navbar-reference="home"><i class="icon fa-home fa-fw" aria-hidden="true"></i><span itemprop="name">Atari Forum</span></a><meta itemprop="position" content="1" /></span>
+			
+							<span class="crumb" itemtype="https://schema.org/ListItem" itemprop="itemListElement" itemscope><a itemprop="item" href="./index.php" accesskey="h" data-navbar-reference="index"><span itemprop="name">Board index</span></a><meta itemprop="position" content="2" /></span>
+
+											
+								<span class="crumb" itemtype="https://schema.org/ListItem" itemprop="itemListElement" itemscope data-forum-id="59"><a itemprop="item" href="./viewforum.php?f=59"><span itemprop="name">32-bit machines (Atari Falcon / Atari TT / Clones)</span></a><meta itemprop="position" content="3" /></span>
+															
+								<span class="crumb" itemtype="https://schema.org/ListItem" itemprop="itemListElement" itemscope data-forum-id="27"><a itemprop="item" href="./viewforum.php?f=27"><span itemprop="name">Professionals</span></a><meta itemprop="position" content="4" /></span>
+							
+					</li>
+
+		
+			</ul>
+
+	</div>
+</div>
+	</div>
+
+	
+	<a id="start_here" class="anchor"></a>
+	<div id="page-body" class="page-body" role="main">
+		
+		
+<h2 class="topic-title"><a href="./viewtopic.php?t=45152">Falcon custom ICs decap and Reverse Engineering</a></h2>
+<!-- NOTE: remove the style="display: none" when you want to have the forum description on the topic body -->
+<div style="display: none !important;">Hardware, coding, music, graphic and various applications<br /></div>
+<p>
+	<strong>Moderators:</strong> <span class="username">lp</span>, <span class="username">moondog/.tSCc.</span>, <span style="color:#00AA00;">Moderator Team</span>
+</p>
+
+
+<div class="action-bar bar-top">
+	
+	
+			
+	
+			<div class="pagination">
+			69 posts
+							<ul>
+		<li class="active"><span>1</span></li>
+				<li><a class="button" href="./viewtopic.php?t=45152&amp;start=25" role="button">2</a></li>
+				<li><a class="button" href="./viewtopic.php?t=45152&amp;start=50" role="button">3</a></li>
+				<li class="arrow next"><a class="button button-icon-only" href="./viewtopic.php?t=45152&amp;start=25" rel="next" role="button"><i class="icon fa-chevron-right fa-fw" aria-hidden="true"></i><span class="sr-only">Next</span></a></li>
+	</ul>
+					</div>
+		</div>
+
+
+
+
+			<div id="p482049" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile482049">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<strong><span style="color: #660000;" class="username-coloured">ijor</span></strong>							</dt>
+
+						<dd class="profile-rank">Hardware Guru<br /><img src="./images/ranks/rank_gryzor.gif" alt="Hardware Guru" title="Hardware Guru" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 4925</dd>		<dd class="profile-joined"><strong>Joined:</strong> Sat May 29, 2004 7:52 pm</dd>		
+		
+											
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content482049">
+
+					<h3 class="first">
+						<a href="./viewtopic.php?p=482049#p482049">Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span style="color: #660000;" class="username-coloured">ijor</span></strong> &raquo; </span><time datetime="2025-06-30T01:44:10+00:00">Mon Jun 30, 2025 1:44 am</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">This thread relates to this project: <a href="https://www.atari-forum.com/viewtopic.php?t=45146" class="postlink" rel="follow" target="_blank">Atari Falcon custom chips decapsulated and available for reverse engineering</a><br>
+The idea is to elaborate here about all the technical aspects and leave the thread mentioned above for administrative purposes.<br>
+<br>
+Some preliminary data without too much elaboration:<br>
+<br>
+All three ICs are Gate Arrays. Videl is based on an LSI Gate Array. Combel and Sdma on Motorola Gate Arrays. They are all channel less arrays, sometimes called Sea of Gates.<br>
+<br>
+Combel &amp; Sdma use exactly the same Motorola base Gate Array. The die size is then identical, and also very similar to Videl die size, about 60 sq mm.<br>
+<br>
+Videl is based on a more advanced technology. With the same die size seems to have close to about twice the capacity. Sdma seems to utilizes almost the whole Gate Array, certainly much more than Combel. This means that Combel is the chip with the smallest number of gates and transistors.<br>
+<br>
+Because Combel &amp; Sdma use the same base Gate Array, the number of total available I/O pads is identical, 180. But of course, Combel has much more pins. Then many Combel pins are not connected to the die at all. While Sdma is the opposite, with many unbonded pads ( not connected to any pin).</div>
+
+			
+			
+									
+						
+							<div id="sig482049" class="signature">Fx Cast: Atari St cycle accurate fpga core</div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p482093" class="post has-profile bg1">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile482093">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<strong><span style="color: #660000;" class="username-coloured">ijor</span></strong>							</dt>
+
+						<dd class="profile-rank">Hardware Guru<br /><img src="./images/ranks/rank_gryzor.gif" alt="Hardware Guru" title="Hardware Guru" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 4925</dd>		<dd class="profile-joined"><strong>Joined:</strong> Sat May 29, 2004 7:52 pm</dd>		
+		
+											
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content482093">
+
+					<h3 >
+						<a href="./viewtopic.php?p=482093#p482093">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span style="color: #660000;" class="username-coloured">ijor</span></strong> &raquo; </span><time datetime="2025-07-01T02:27:50+00:00">Tue Jul 01, 2025 2:27 am</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">Videl is based, at least apparently, on an LSI Gate Array family called "Compacted Array". According to documentation available online it is specified as 1.5 um.<br>
+
+<div class="inline-attachment"><!-- ia0 -->Videl-Compact-1.jpg<!-- ia0 --></div>
+
+<br>
+<br>
+I couldn't identify the Combel and Sdma Gate Array family, though. These are the main legends (besides the Atari brand) found on the dies:<br>
+
+<div class="inline-attachment"><!-- ia1 -->Combel-Legend-1.jpg<!-- ia1 --></div>
+<div class="inline-attachment"><!-- ia2 -->Combel-Legend-2.jpg<!-- ia2 --></div>
+
+<br>
+<br>
+I googled for D80R (or D8OR), and AT26P4, but couldn't find anything meaningful. They could be just mask codes, the latter could even be an Atari specific code. May be somebody else will have more luck searching those codes.<br>
+<br>
+There is extensive documentation online about the Motorola Gate Arrays (Motorola used the term Macrocell Array) from the period. There is the HCA6000 serie, from the mid &amp; late 80's. And there is the HDC series from the early 90's. As far as I can tell Combel &amp; Sdma seem to belong to some family somewhere in between those two. But I couldn't find any reference in the Motorola Catalogs. May be it was a short lived family and the documentation is hard to find online.</div>
+
+			
+			
+						<div class="rules">You do not have the required permissions to view the files attached to this post.</div>			
+						
+							<div id="sig482093" class="signature">Fx Cast: Atari St cycle accurate fpga core</div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p482096" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile482096">
+			<dt class="has-profile-rank has-avatar">
+				<div class="avatar-container">
+																<span class="avatar"><img class="avatar" src="./download/file.php?avatar=21128_1336391821.png" width="93" height="100" alt="User avatar" /></span>														</div>
+								<strong><span class="username">1st1</span></strong>							</dt>
+
+						<dd class="profile-rank">Atari God<br /><img src="./images/ranks/rank4.gif" alt="Atari God" title="Atari God" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 1430</dd>		<dd class="profile-joined"><strong>Joined:</strong> Mon May 07, 2012 11:48 am</dd>		
+		
+						
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content482096">
+
+					<h3 >
+						<a href="./viewtopic.php?p=482096#p482096">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span class="username">1st1</span></strong> &raquo; </span><time datetime="2025-07-01T05:35:22+00:00">Tue Jul 01, 2025 5:35 am</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">Cool action! What comes next? 100% Falcon clone reproduction? Enhance to MicroBox real 32 Bit design (recycling Sony PS2 box), reproduction of Falcon 040 / 060 mainboard in ATX formfactor? Higher clockspeed and higher resolution with these?</div>
+
+			
+			
+									
+						
+							<div id="sig482096" class="signature">Power without the Price. It's not a bug. It's a feature.  _/|\_ATARI<br>
+<br>
+1040STFM in PC-Tower (PAK68/2, OvrScn, 4 MB, 1GB SCSI, CD-ROM...) * 2x Falcon 030 * Falcon 060 * 3x TT030 * many 260 /520/1040ST(F)(M)(+) * 520/1040STE * many Mega ST * 2x Mega STE * Stacy * STBook * 3x SLM605 * 3x SLM804 * SMM804 * SH 204/205 * Megafile 30/44/60 * SF314 * SF354 * 5x Pofo * PC2 * PC3 * PC4M * ABC286 * ...</div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p482106" class="post has-profile bg1">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile482106">
+			<dt class="has-profile-rank has-avatar">
+				<div class="avatar-container">
+																<span class="avatar"><img class="avatar" src="./download/file.php?avatar=498_1313934971.png" width="128" height="127" alt="User avatar" /></span>														</div>
+								<strong><span class="username">Ragstaff</span></strong>							</dt>
+
+						<dd class="profile-rank">Atari Super Hero<br /><img src="./images/ranks/rank3.gif" alt="Atari Super Hero" title="Atari Super Hero" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 882</dd>		<dd class="profile-joined"><strong>Joined:</strong> Mon Oct 20, 2003 3:39 am</dd>		
+		
+																										<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Melbourne Australia</dd>
+							
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content482106">
+
+					<h3 >
+						<a href="./viewtopic.php?p=482106#p482106">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span class="username">Ragstaff</span></strong> &raquo; </span><time datetime="2025-07-01T11:49:35+00:00">Tue Jul 01, 2025 11:49 am</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">Maybe spare parts for dead falcons? "Compatibility board" for the TT, so it can run some Falcon software?</div>
+
+			
+			
+									
+						
+							<div id="sig482106" class="signature"><ul><li>Currently using an <a href="https://www.atari-forum.com/wiki/index.php/ST" class="postlink" rel="follow" target="_blank"><strong class="text-strong">ST</strong></a>, <a href="https://www.atari-forum.com/wiki/index.php/Mega_STE" class="postlink" rel="follow" target="_blank"><strong class="text-strong">Mega STE</strong></a>, <a href="https://www.atari-forum.com/wiki/index.php/Category:Atari_Consoles" class="postlink" rel="follow" target="_blank"><strong class="text-strong">Jaguar</strong>, <strong class="text-strong">Lynx</strong>, and a <strong class="text-strong">2600</strong></a></li>
+<li>Editing the <a href="https://www.atari-forum.com/wiki" class="postlink" rel="follow" target="_blank"><span style="text-decoration:underline"><strong class="text-strong"><span style="color:#FF0040">At</span><span style="color:#FF8000">ar</span><span style="color:#FFFF40">i-</span><span style="color:#00BF00">for</span><span style="color:#00BFFF">um</span> <span style="color:#0000FF">wik</span><span style="color:#000080">i!</span></strong></span></a> Please contribute!</li></ul></div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p482122" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile482122">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<strong><span style="color: #660000;" class="username-coloured">ijor</span></strong>							</dt>
+
+						<dd class="profile-rank">Hardware Guru<br /><img src="./images/ranks/rank_gryzor.gif" alt="Hardware Guru" title="Hardware Guru" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 4925</dd>		<dd class="profile-joined"><strong>Joined:</strong> Sat May 29, 2004 7:52 pm</dd>		
+		
+											
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content482122">
+
+					<h3 >
+						<a href="./viewtopic.php?p=482122#p482122">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span style="color: #660000;" class="username-coloured">ijor</span></strong> &raquo; </span><time datetime="2025-07-01T19:15:46+00:00">Tue Jul 01, 2025 7:15 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">Somebody asked what exactly is a "<em class="text-italics">Sea of Gates</em>".<br>
+<br>
+Traditional Gate Arrays are composed of rows (or columns, depending on the orientation) with the actual transistor cells used to build the gates. Between the rows there are empty rows (or columns) of space, sometimes called "channels". The channels are used for the metal routing interconnect.<br>
+<br>
+See this example from the Happy HART chip taken by @Zippy:<br>
+
+<div class="inline-attachment"><!-- ia2 -->Hart-GateArray-sample1.jpg<!-- ia2 --></div>
+
+You can see the row with the uncommitted transistors at the middle. And the routing channels at the bottom and the top.<br>
+<br>
+Many more modern Gate Arrays are built without channels. They are sometimes called "channelless". A Combel and a Videl sample:
+<div class="inline-attachment"><!-- ia1 -->SeaOfGates-sample-2.jpg<!-- ia1 --></div>
+
+<div class="inline-attachment"><!-- ia0 -->SeaOfGates-sample.jpg<!-- ia0 --></div>
+
+You can see that now the whole array is filled with transistors without almost any empty space. Hence the term Sea of Gates. The interconnect now instead of being routed at the empty channels, it is routed, as needed, over unused transistors. The transistors are at the silicon layers and as long as not connected with vias, don't interfere with the metal interconnect.<br>
+<br>
+Obviously, in practice is not possible to use all the available transistors because otherwise you wouldn't be able to connect them. But this pattern is more flexible and allows better and more efficient place and route.</div>
+
+			
+			
+						<div class="rules">You do not have the required permissions to view the files attached to this post.</div>			
+						
+							<div id="sig482122" class="signature">Fx Cast: Atari St cycle accurate fpga core</div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p482142" class="post has-profile bg1">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile482142">
+			<dt class="has-profile-rank has-avatar">
+				<div class="avatar-container">
+																<span class="avatar"><img class="avatar" src="./download/file.php?avatar=21128_1336391821.png" width="93" height="100" alt="User avatar" /></span>														</div>
+								<strong><span class="username">1st1</span></strong>							</dt>
+
+						<dd class="profile-rank">Atari God<br /><img src="./images/ranks/rank4.gif" alt="Atari God" title="Atari God" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 1430</dd>		<dd class="profile-joined"><strong>Joined:</strong> Mon May 07, 2012 11:48 am</dd>		
+		
+						
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content482142">
+
+					<h3 >
+						<a href="./viewtopic.php?p=482142#p482142">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span class="username">1st1</span></strong> &raquo; </span><time datetime="2025-07-02T07:10:35+00:00">Wed Jul 02, 2025 7:10 am</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">Linking together, what belongs together...<br>
+<br>
+<a href="https://www.atari-forum.com/viewtopic.php?t=19656" class="postlink" rel="follow" target="_blank">Falcon 030 Microbox board</a><br>
+<a href="https://www.atari-forum.com/viewtopic.php?t=45162" class="postlink" rel="follow" target="_blank">Wizztronics Atari Falcon rebuild</a></div>
+
+			
+			
+									
+						
+							<div id="sig482142" class="signature">Power without the Price. It's not a bug. It's a feature.  _/|\_ATARI<br>
+<br>
+1040STFM in PC-Tower (PAK68/2, OvrScn, 4 MB, 1GB SCSI, CD-ROM...) * 2x Falcon 030 * Falcon 060 * 3x TT030 * many 260 /520/1040ST(F)(M)(+) * 520/1040STE * many Mega ST * 2x Mega STE * Stacy * STBook * 3x SLM605 * 3x SLM804 * SMM804 * SH 204/205 * Megafile 30/44/60 * SF314 * SF354 * 5x Pofo * PC2 * PC3 * PC4M * ABC286 * ...</div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p482155" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile482155">
+			<dt class="has-profile-rank has-avatar">
+				<div class="avatar-container">
+																<span class="avatar"><img class="avatar" src="./download/file.php?avatar=1443.gif" width="45" height="45" alt="User avatar" /></span>														</div>
+								<strong><span class="username">alexh</span></strong>							</dt>
+
+						<dd class="profile-rank">Fuji Shaped Bastard<br /><img src="./images/ranks/rank_gryzor.gif" alt="Fuji Shaped Bastard" title="Fuji Shaped Bastard" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 3198</dd>		<dd class="profile-joined"><strong>Joined:</strong> Wed Oct 20, 2004 1:52 pm</dd>		
+		
+																<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> UK - Oxford</dd>
+							
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content482155">
+
+					<h3 >
+						<a href="./viewtopic.php?p=482155#p482155">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span class="username">alexh</span></strong> &raquo; </span><time datetime="2025-07-02T12:37:58+00:00">Wed Jul 02, 2025 12:37 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">Any use? This is a bipolar MCA book (not CMOS) so probably not.<br>
+<br>
+<a href="http://bitsavers.informatik.uni-stuttgart.de/components/motorola/_dataBooks/1991_Motorola_MCA3_ETL_Series_Design_Manual.pdf" class="pdf-link" rel="nofollow" target="_blank">http://bitsavers.informatik.uni-stuttga ... Manual.pdf</a><br>
+<br>
+This one is a few years later (1994)<br>
+<br>
+<a href="http://bitsavers.informatik.uni-stuttgart.de/components/motorola/_dataBooks/1994_Motorola_H4CPlus_Series_CMOS_Gate_Arrays_Design_Reference.pdf" class="pdf-link" rel="nofollow" target="_blank">http://bitsavers.informatik.uni-stuttga ... erence.pdf</a></div>
+
+			
+			
+									
+						
+							<div id="sig482155" class="signature">Senior Principal ASIC Engineer<br>
+520 ST, 4160 STfm, 4160 STe, MegaST2, MegaSTe 4, Falcon060, Jaguar<br>
+<a href="http://thalion.atari.org" class="postlink" rel="nofollow" target="_blank"><span style="text-decoration:underline">Thalion Webshrine</span></a><br>
+<a href="https://www.atari-forum.com/wiki/index.php" class="postlink" rel="follow" target="_blank"><strong class="text-strong">Atari Forum Wiki</strong></a></div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p482179" class="post has-profile bg1">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile482179">
+			<dt class="has-profile-rank has-avatar">
+				<div class="avatar-container">
+																<span class="avatar"><img class="avatar" src="./download/file.php?avatar=33362_1592663487.gif" width="79" height="64" alt="User avatar" /></span>														</div>
+								<strong><span class="username">tOri</span></strong>							</dt>
+
+						<dd class="profile-rank">Captain Atari<br /><img src="./images/ranks/rank2.gif" alt="Captain Atari" title="Captain Atari" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 282</dd>		<dd class="profile-joined"><strong>Joined:</strong> Thu Jun 18, 2020 4:30 pm</dd>		
+		
+																<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Poland</dd>
+							
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content482179">
+
+					<h3 >
+						<a href="./viewtopic.php?p=482179#p482179">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span class="username">tOri</span></strong> &raquo; </span><time datetime="2025-07-02T17:57:55+00:00">Wed Jul 02, 2025 5:57 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">Hi,<br>
+<br>
+I think so, and in this case the manufacturer used its standard libraries when creating the layout. First we should find the designs of these libraries (gates, flip-flops) and fit them into the photos. After this there is a need to learn how to read and "decode" layout properly. From somewhere I know that there are not many correct patterns and therefore during decoding it is mostly possible to exclude wrong connections. First of all, a very high level of attention, calmness and lack of haste is required. If I see something in these photos it will be great. If, on the other hand, I have trouble understanding what I see - I am unlikely to make progress.<br>
+<br>
+Regards<br>
+tOri<br>
+<br>
+Some samples below<br>
+
+<div class="inline-attachment"><!-- ia1 -->BG1-flat.jpg<!-- ia1 --></div>
+<div class="inline-attachment"><!-- ia0 -->BG1-str.jpg<!-- ia0 --></div>
+<div class="inline-attachment"><!-- ia2 -->BG1_die.jpg<!-- ia2 --></div>
+<div class="inline-attachment"><!-- ia3 -->BG1.jpg<!-- ia3 --></div></div>
+
+			
+			
+						<div class="rules">You do not have the required permissions to view the files attached to this post.</div>			
+						
+							<div id="sig482179" class="signature"><a href="https://reversing.pl/" class="postlink" rel="nofollow" target="_blank">https://reversing.pl/</a> <strong class="text-strong"><span style="color:#BF0040">ATARI - Power without price and necessary elements</span></strong><br>
+various varieties for Atari and not only - useful or not, but it's worth a look ...<br>
+<a href="http://atari.myftp.org" class="postlink" rel="nofollow" target="_blank">http://atari.myftp.org</a></div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p482219" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile482219">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<strong><span style="color: #660000;" class="username-coloured">ijor</span></strong>							</dt>
+
+						<dd class="profile-rank">Hardware Guru<br /><img src="./images/ranks/rank_gryzor.gif" alt="Hardware Guru" title="Hardware Guru" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 4925</dd>		<dd class="profile-joined"><strong>Joined:</strong> Sat May 29, 2004 7:52 pm</dd>		
+		
+											
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content482219">
+
+					<h3 >
+						<a href="./viewtopic.php?p=482219#p482219">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span style="color: #660000;" class="username-coloured">ijor</span></strong> &raquo; </span><time datetime="2025-07-03T16:53:13+00:00">Thu Jul 03, 2025 4:53 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content"><blockquote cite="./viewtopic.php?p=482155#p482155"><div><cite><a href="./memberlist.php?mode=viewprofile&amp;u=1443" rel="follow" target="_blank">alexh</a> wrote: <a href="./viewtopic.php?p=482155#p482155" aria-label="View quoted post" data-post-id="482155" onclick="if(document.getElementById(hash.substr(1)))href=hash" rel="follow" target="_blank"><i class="icon fa-arrow-circle-up fa-fw" aria-hidden="true"></i></a><span class="responsive-hide">Wed Jul 02, 2025 12:37 pm</span></cite>
+Any use? This is a bipolar MCA book (not CMOS) so probably not.<br>
+This one is a few years later (1994)
+</div></blockquote>
+
+Thanks Alex. But as you figured out, it is none of those.</div>
+
+			
+			
+									
+						
+							<div id="sig482219" class="signature">Fx Cast: Atari St cycle accurate fpga core</div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p482226" class="post has-profile bg1">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile482226">
+			<dt class="has-profile-rank has-avatar">
+				<div class="avatar-container">
+																<span class="avatar"><img class="avatar" src="./download/file.php?avatar=1649.jpg" width="55" height="64" alt="User avatar" /></span>														</div>
+								<strong><span class="username">dlfrsilver</span></strong>							</dt>
+
+						<dd class="profile-rank">Fuji Shaped Bastard<br /><img src="./images/ranks/rank_gryzor.gif" alt="Fuji Shaped Bastard" title="Fuji Shaped Bastard" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 2538</dd>		<dd class="profile-joined"><strong>Joined:</strong> Mon Jan 31, 2005 1:41 am</dd>		
+		
+						
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content482226">
+
+					<h3 >
+						<a href="./viewtopic.php?p=482226#p482226">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span class="username">dlfrsilver</span></strong> &raquo; </span><time datetime="2025-07-03T19:13:34+00:00">Thu Jul 03, 2025 7:13 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">Awesome work. At last, the falcon will get out of its own misery, opening its wings to many much more people. <br>
+<br>
+This means software development interest for devs, and interest for new users <img class="smilies" src="./images/smilies/icon_razz.gif" width="15" height="15" alt=":P" title="Razz"></div>
+
+			
+			
+									
+						
+							<div id="sig482226" class="signature">Now SPS France representative since the 19th of June 2014. Proud to be an SPS member !<br>
+Atari 520 STF / Atari 1040 STF / Atari 520 STE / Atari 1040 STE / Atari Falcon 030 14mb + 8gb CF</div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p482330" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile482330">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<strong><span style="color: #660000;" class="username-coloured">ijor</span></strong>							</dt>
+
+						<dd class="profile-rank">Hardware Guru<br /><img src="./images/ranks/rank_gryzor.gif" alt="Hardware Guru" title="Hardware Guru" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 4925</dd>		<dd class="profile-joined"><strong>Joined:</strong> Sat May 29, 2004 7:52 pm</dd>		
+		
+											
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content482330">
+
+					<h3 >
+						<a href="./viewtopic.php?p=482330#p482330">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span style="color: #660000;" class="username-coloured">ijor</span></strong> &raquo; </span><time datetime="2025-07-07T02:53:50+00:00">Mon Jul 07, 2025 2:53 am</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">The Falcon Service Guide seems to have lots of mistakes. Unbelievable!<br>
+<br>
+Some are quite obvious, like Videl <strong class="text-strong">CAS0 </strong>and <strong class="text-strong">CAS1 </strong>are Input pins, not Output. Others not so much. E.g., the Videl <strong class="text-strong">EXT </strong>signal at pin 199 doesn't seem to have the documented function at all. I assume that the <strong class="text-strong">EXTCLK </strong>is software selectable instead?</div>
+
+			
+			
+									
+						
+							<div id="sig482330" class="signature">Fx Cast: Atari St cycle accurate fpga core</div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p482337" class="post has-profile bg1">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile482337">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<strong><span style="color: #660000;" class="username-coloured">mikro</span></strong>							</dt>
+
+						<dd class="profile-rank">Hardware Guru<br /><img src="./images/ranks/rank_gryzor.gif" alt="Hardware Guru" title="Hardware Guru" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 5344</dd>		<dd class="profile-joined"><strong>Joined:</strong> Sat Sep 10, 2005 11:11 am</dd>		
+		
+																<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Brisbane, QLD, Australia</dd>
+							
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content482337">
+
+					<h3 >
+						<a href="./viewtopic.php?p=482337#p482337">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span style="color: #660000;" class="username-coloured">mikro</span></strong> &raquo; </span><time datetime="2025-07-07T07:52:29+00:00">Mon Jul 07, 2025 7:52 am</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">Yes, you can switch between 25.175, 32 and external clocks by software. EXTCLK is the pin where the clock should be routed.<br>
+<br>
+My educated guess is that the EXT pin is the equivalent to 
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;" rel="follow" target="_blank">Select all</a></p><pre><code>$FFFF820A [R/W] _______0  .................................. SYNC-MODE
+                       |
+                       +--Synchronisation [ 0:internal / 1:external ]
+</code></pre></div></div>
+
+			
+			
+									
+						
+										
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p482346" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile482346">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<strong><span class="username">SteveBagley</span></strong>							</dt>
+
+						<dd class="profile-rank">Captain Atari<br /><img src="./images/ranks/rank2.gif" alt="Captain Atari" title="Captain Atari" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 336</dd>		<dd class="profile-joined"><strong>Joined:</strong> Mon Jan 21, 2013 9:31 am</dd>		
+		
+						
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content482346">
+
+					<h3 >
+						<a href="./viewtopic.php?p=482346#p482346">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span class="username">SteveBagley</span></strong> &raquo; </span><time datetime="2025-07-07T11:09:10+00:00">Mon Jul 07, 2025 11:09 am</time>
+			</p>
+			
+			
+			
+			
+			<div class="content"><blockquote cite="./viewtopic.php?p=482337#p482337"><div><cite><a href="./memberlist.php?mode=viewprofile&amp;u=2009" rel="follow" target="_blank">mikro</a> wrote: <a href="./viewtopic.php?p=482337#p482337" aria-label="View quoted post" data-post-id="482337" onclick="if(document.getElementById(hash.substr(1)))href=hash" rel="follow" target="_blank"><i class="icon fa-arrow-circle-up fa-fw" aria-hidden="true"></i></a><span class="responsive-hide">Mon Jul 07, 2025 7:52 am</span></cite>
+Yes, you can switch between 25.175, 32 and external clocks by software. EXTCLK is the pin where the clock should be routed.<br>
+<br>
+My educated guess is that the EXT pin is the equivalent to 
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;" rel="follow" target="_blank">Select all</a></p><pre><code>$FFFF820A [R/W] _______0  .................................. SYNC-MODE
+                       |
+                       +--Synchronisation [ 0:internal / 1:external ]
+</code></pre></div>
+</div></blockquote>
+
+Doesn't that bit just switch the sync signals on and off rather than the pixel clock they are derived from? At least, that's how it works on the ST. The Falcon allows for more granular control and allows HSync and VSync to be disabled independently, via $FF8266). This enables the Falcon to be genlocked in the same way as an Amiga, the HSYNC generated by VIDEL is phase-locked to the incoming video by altering the external clock and then Vsync is switched to external.<br>
+<br>
+Steve</div>
+
+			
+			
+									
+						
+										
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p482348" class="post has-profile bg1">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile482348">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<strong><span style="color: #660000;" class="username-coloured">mikro</span></strong>							</dt>
+
+						<dd class="profile-rank">Hardware Guru<br /><img src="./images/ranks/rank_gryzor.gif" alt="Hardware Guru" title="Hardware Guru" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 5344</dd>		<dd class="profile-joined"><strong>Joined:</strong> Sat Sep 10, 2005 11:11 am</dd>		
+		
+																<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Brisbane, QLD, Australia</dd>
+							
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content482348">
+
+					<h3 >
+						<a href="./viewtopic.php?p=482348#p482348">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span style="color: #660000;" class="username-coloured">mikro</span></strong> &raquo; </span><time datetime="2025-07-07T12:44:46+00:00">Mon Jul 07, 2025 12:44 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">To be honest, I have never physically programmed the switch between 25 / 32 / ext clock. I have always assumed that there's two bits for it and nope, it's not, it's just the 25 / 32. So switching to EXTCLK must be done somewhere else, my guess was the 820A register.</div>
+
+			
+			
+									
+						
+										
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p482384" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile482384">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<strong><span style="color: #660000;" class="username-coloured">ijor</span></strong>							</dt>
+
+						<dd class="profile-rank">Hardware Guru<br /><img src="./images/ranks/rank_gryzor.gif" alt="Hardware Guru" title="Hardware Guru" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 4925</dd>		<dd class="profile-joined"><strong>Joined:</strong> Sat May 29, 2004 7:52 pm</dd>		
+		
+											
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content482384">
+
+					<h3 >
+						<a href="./viewtopic.php?p=482384#p482384">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span style="color: #660000;" class="username-coloured">ijor</span></strong> &raquo; </span><time datetime="2025-07-07T23:31:14+00:00">Mon Jul 07, 2025 11:31 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content"><blockquote cite="./viewtopic.php?p=482337#p482337"><div><cite><a href="./memberlist.php?mode=viewprofile&amp;u=2009" rel="follow" target="_blank">mikro</a> wrote: <a href="./viewtopic.php?p=482337#p482337" aria-label="View quoted post" data-post-id="482337" onclick="if(document.getElementById(hash.substr(1)))href=hash" rel="follow" target="_blank"><i class="icon fa-arrow-circle-up fa-fw" aria-hidden="true"></i></a><span class="responsive-hide">Mon Jul 07, 2025 7:52 am</span></cite>
+My educated guess is that the EXT pin is the equivalent to 
+<div class="codebox"><p>Code: <a href="#" onclick="selectCode(this); return false;" rel="follow" target="_blank">Select all</a></p><pre><code>$FFFF820A [R/W] _______0  .................................. SYNC-MODE
+                       |
+                       +--Synchronisation [ 0:internal / 1:external ]
+</code></pre></div>
+</div></blockquote>
+
+No. That's the (wrongly) documented functionality in the Service Guide. But instead it seems that is used for internal chip diagnostic purposes.</div>
+
+			
+			
+									
+						
+							<div id="sig482384" class="signature">Fx Cast: Atari St cycle accurate fpga core</div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p483285" class="post has-profile bg1">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile483285">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<strong><span style="color: #660000;" class="username-coloured">ijor</span></strong>							</dt>
+
+						<dd class="profile-rank">Hardware Guru<br /><img src="./images/ranks/rank_gryzor.gif" alt="Hardware Guru" title="Hardware Guru" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 4925</dd>		<dd class="profile-joined"><strong>Joined:</strong> Sat May 29, 2004 7:52 pm</dd>		
+		
+											
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content483285">
+
+					<h3 >
+						<a href="./viewtopic.php?p=483285#p483285">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span style="color: #660000;" class="username-coloured">ijor</span></strong> &raquo; </span><time datetime="2025-07-25T13:31:46+00:00">Fri Jul 25, 2025 1:31 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">Videl has video Ram FIFO, that according to the documentation is read in page mode. Somebody knows how big is this FIFO?<br>
+.<br>
+.<br>
+.<br>
+Disclaimer: I already know the answer, or at least I think I know. Just wondering if this is known ...</div>
+
+			
+			
+									
+						
+							<div id="sig483285" class="signature">Fx Cast: Atari St cycle accurate fpga core</div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p483291" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile483291">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<strong><span style="color: #660000;" class="username-coloured">czietz</span></strong>							</dt>
+
+						<dd class="profile-rank">Hardware Guru<br /><img src="./images/ranks/rank_gryzor.gif" alt="Hardware Guru" title="Hardware Guru" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 3161</dd>		<dd class="profile-joined"><strong>Joined:</strong> Tue May 24, 2016 6:47 pm</dd>		
+		
+						
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content483291">
+
+					<h3 >
+						<a href="./viewtopic.php?p=483291#p483291">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span style="color: #660000;" class="username-coloured">czietz</span></strong> &raquo; </span><time datetime="2025-07-25T15:24:42+00:00">Fri Jul 25, 2025 3:24 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">The chip documentation says: "Dual 34x16 Ram Buffers" about the Videl FIFO. However, we know that some documentation is from early design stages and not everything reflects what is actually in silicon.</div>
+
+			
+			
+									
+						
+										
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p483297" class="post has-profile bg1">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile483297">
+			<dt class="has-profile-rank has-avatar">
+				<div class="avatar-container">
+																<span class="avatar"><img class="avatar" src="./download/file.php?avatar=133_1680820271.png" width="40" height="40" alt="User avatar" /></span>														</div>
+								<strong><span class="username">Cyprian</span></strong>							</dt>
+
+						<dd class="profile-rank">10 GOTO 10<br /><img src="./images/ranks/Inept.gif" alt="10 GOTO 10" title="10 GOTO 10" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 3528</dd>		<dd class="profile-joined"><strong>Joined:</strong> Fri Oct 04, 2002 11:23 am</dd>		
+		
+											<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Warsaw, Poland</dd>
+							
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content483297">
+
+					<h3 >
+						<a href="./viewtopic.php?p=483297#p483297">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span class="username">Cyprian</span></strong> &raquo; </span><time datetime="2025-07-25T16:00:52+00:00">Fri Jul 25, 2025 4:00 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">@Mikro described on his website that Videl reads  data in 17 long words at a time.<br>
+But why 17? Due to RAM requirements?</div>
+
+			
+			
+									
+						
+							<div id="sig483297" class="signature">ATW800/2 / V4sa / Lynx I / Mega ST 1 / 7800 / Portfolio / Lynx II / Jaguar / TT030 / Mega STe / 800 XL / 1040 STe / Falcon030 / 65 XE / 520 STm / SM124 / SC1435<br>
+DDD HDD / AT Speed C16 / TF536 / SDrive / PAK68/3 / Lynx Multi Card / LDW Super 2000 / XCA12 / SkunkBoard / CosmosEx / SatanDisk / UltraSatan / USB Floppy Drive Emulator / Eiffel / SIO2PC / Crazy Dots / PAM Net<br>
+<a href="http://260ste.atari.org" class="postlink" rel="nofollow" target="_blank">http://260ste.atari.org</a></div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p483320" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile483320">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<strong><span style="color: #660000;" class="username-coloured">ijor</span></strong>							</dt>
+
+						<dd class="profile-rank">Hardware Guru<br /><img src="./images/ranks/rank_gryzor.gif" alt="Hardware Guru" title="Hardware Guru" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 4925</dd>		<dd class="profile-joined"><strong>Joined:</strong> Sat May 29, 2004 7:52 pm</dd>		
+		
+											
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content483320">
+
+					<h3 >
+						<a href="./viewtopic.php?p=483320#p483320">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span style="color: #660000;" class="username-coloured">ijor</span></strong> &raquo; </span><time datetime="2025-07-25T19:33:29+00:00">Fri Jul 25, 2025 7:33 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content"><blockquote cite="./viewtopic.php?p=483291#p483291"><div><cite><a href="./memberlist.php?mode=viewprofile&amp;u=24978" rel="follow" target="_blank">czietz</a> wrote: <a href="./viewtopic.php?p=483291#p483291" aria-label="View quoted post" data-post-id="483291" onclick="if(document.getElementById(hash.substr(1)))href=hash" rel="follow" target="_blank"><i class="icon fa-arrow-circle-up fa-fw" aria-hidden="true"></i></a><span class="responsive-hide">Fri Jul 25, 2025 3:24 pm</span></cite>
+The chip documentation says: "Dual 34x16 Ram Buffers" about the Videl FIFO.
+</div></blockquote>
+
+That seems to be correct. Wasn't aware that this was documented.<br>
+<br>
+Each buffer has 34 words, each word being 16-bit. The datapath is shared between both buffers. As far as I can see it is not possible to read or write 32-bits simultaneously. But there are separate read and write buses. So it possible to read from one buffer and write to the other at the same time independently. <br>
+<br>
+These buffers take a significant portion of the die:</div>
+
+			
+			
+						<div class="rules">You do not have the required permissions to view the files attached to this post.</div>			
+						
+							<div id="sig483320" class="signature">Fx Cast: Atari St cycle accurate fpga core</div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p483323" class="post has-profile bg1">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile483323">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<strong><span style="color: #660000;" class="username-coloured">czietz</span></strong>							</dt>
+
+						<dd class="profile-rank">Hardware Guru<br /><img src="./images/ranks/rank_gryzor.gif" alt="Hardware Guru" title="Hardware Guru" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 3161</dd>		<dd class="profile-joined"><strong>Joined:</strong> Tue May 24, 2016 6:47 pm</dd>		
+		
+						
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content483323">
+
+					<h3 >
+						<a href="./viewtopic.php?p=483323#p483323">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span style="color: #660000;" class="username-coloured">czietz</span></strong> &raquo; </span><time datetime="2025-07-25T19:58:26+00:00">Fri Jul 25, 2025 7:58 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content"><blockquote cite="./viewtopic.php?p=483320#p483320"><div><cite><a href="./memberlist.php?mode=viewprofile&amp;u=976" rel="follow" target="_blank">ijor</a> wrote: <a href="./viewtopic.php?p=483320#p483320" aria-label="View quoted post" data-post-id="483320" onclick="if(document.getElementById(hash.substr(1)))href=hash" rel="follow" target="_blank"><i class="icon fa-arrow-circle-up fa-fw" aria-hidden="true"></i></a><span class="responsive-hide">Fri Jul 25, 2025 7:33 pm</span></cite>
+But there are separate read and write buses. So it possible to read from one buffer and write to the other at the same time independently. 
+</div></blockquote>
+
+This is also matches Atari's internal Videl documentation (emphasis mine):
+<blockquote class="uncited"><div>
+The depth of the buffers (34) was determined according  to CPU utilization<br>
+calculations. <strong class="text-strong">The two RAM Buffers work in ping pong mode. While one is read<br>
+from, the other is loaded.</strong>  When the one that is read reaches its end a<br>
+VREQ signal is issued to the MCU (in the COMBO chip) and reading continues from<br>
+the second buffer while the first buffer is being loaded with new data.
+</div></blockquote></div>
+
+			
+			
+									
+						
+										
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p483325" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile483325">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<strong><span style="color: #660000;" class="username-coloured">ijor</span></strong>							</dt>
+
+						<dd class="profile-rank">Hardware Guru<br /><img src="./images/ranks/rank_gryzor.gif" alt="Hardware Guru" title="Hardware Guru" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 4925</dd>		<dd class="profile-joined"><strong>Joined:</strong> Sat May 29, 2004 7:52 pm</dd>		
+		
+											
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content483325">
+
+					<h3 >
+						<a href="./viewtopic.php?p=483325#p483325">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span style="color: #660000;" class="username-coloured">ijor</span></strong> &raquo; </span><time datetime="2025-07-26T00:20:17+00:00">Sat Jul 26, 2025 12:20 am</time>
+			</p>
+			
+			
+			
+			
+			<div class="content"><blockquote cite="./viewtopic.php?p=483323#p483323"><div><cite><a href="./memberlist.php?mode=viewprofile&amp;u=24978" rel="follow" target="_blank">czietz</a> wrote: <a href="./viewtopic.php?p=483323#p483323" aria-label="View quoted post" data-post-id="483323" onclick="if(document.getElementById(hash.substr(1)))href=hash" rel="follow" target="_blank"><i class="icon fa-arrow-circle-up fa-fw" aria-hidden="true"></i></a><span class="responsive-hide">Fri Jul 25, 2025 7:58 pm</span></cite>
+This is also matches Atari's internal Videl documentation (emphasis mine):
+<blockquote class="uncited"><div>
+The depth of the buffers (34) was determined according  to CPU utilization<br>
+calculations. <strong class="text-strong">The two RAM Buffers work in ping pong mode. While one is read<br>
+from, the other is loaded.</strong>  When the one that is read reaches its end a<br>
+VREQ signal is issued to the MCU (in the COMBO chip) and reading continues from<br>
+the second buffer while the first buffer is being loaded with new data.
+</div></blockquote>
+</div></blockquote>
+
+Right. Just a pity that 32-bit mode is not implemented. That would be much more efficient. It would consume half the memory bandwidth.</div>
+
+			
+			
+									
+						
+							<div id="sig483325" class="signature">Fx Cast: Atari St cycle accurate fpga core</div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p485500" class="post has-profile bg1">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile485500">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<strong><span style="color: #660000;" class="username-coloured">ijor</span></strong>							</dt>
+
+						<dd class="profile-rank">Hardware Guru<br /><img src="./images/ranks/rank_gryzor.gif" alt="Hardware Guru" title="Hardware Guru" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 4925</dd>		<dd class="profile-joined"><strong>Joined:</strong> Sat May 29, 2004 7:52 pm</dd>		
+		
+											
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content485500">
+
+					<h3 >
+						<a href="./viewtopic.php?p=485500#p485500">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span style="color: #660000;" class="username-coloured">ijor</span></strong> &raquo; </span><time datetime="2025-09-10T13:20:31+00:00">Wed Sep 10, 2025 1:20 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">VIDEL pin 119, EXT. According to the service guide:<br>
+
+<blockquote class="uncited"><div>
+119,EXT,Input,Used to turn on the external Genlock logic
+</div></blockquote>
+
+This is not what I am seeing at the die. It actually seems an Output, not an Input at all. I don't find a connection to this signal at the schematics.<br>
+<br>
+Anybody knows anything about this Videl pin?</div>
+
+			
+			
+									
+						
+							<div id="sig485500" class="signature">Fx Cast: Atari St cycle accurate fpga core</div>			
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p485565" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile485565">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<strong><span style="color: #660000;" class="username-coloured">czietz</span></strong>							</dt>
+
+						<dd class="profile-rank">Hardware Guru<br /><img src="./images/ranks/rank_gryzor.gif" alt="Hardware Guru" title="Hardware Guru" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 3161</dd>		<dd class="profile-joined"><strong>Joined:</strong> Tue May 24, 2016 6:47 pm</dd>		
+		
+						
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content485565">
+
+					<h3 >
+						<a href="./viewtopic.php?p=485565#p485565">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span style="color: #660000;" class="username-coloured">czietz</span></strong> &raquo; </span><time datetime="2025-09-12T05:41:57+00:00">Fri Sep 12, 2025 5:41 am</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">At least for the Combel some pin numbers in the service guide are just plain wrong, iirc. Maybe this is another case?</div>
+
+			
+			
+									
+						
+										
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p485596" class="post has-profile bg1">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile485596">
+			<dt class="has-profile-rank has-avatar">
+				<div class="avatar-container">
+																<span class="avatar"><img class="avatar" src="./download/file.php?avatar=35090_1665600789.png" width="64" height="64" alt="User avatar" /></span>														</div>
+								<strong><span class="username">redpixel</span></strong>							</dt>
+
+						<dd class="profile-rank">Atari maniac<br /><img src="./images/ranks/rank2.gif" alt="Atari maniac" title="Atari maniac" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 79</dd>		<dd class="profile-joined"><strong>Joined:</strong> Fri Aug 13, 2021 7:54 am</dd>		
+		
+											<dd class="profile-custom-field profile-phpbb_location"><strong>Location:</strong> Gothenburg, Sweden</dd>
+							
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content485596">
+
+					<h3 >
+						<a href="./viewtopic.php?p=485596#p485596">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span class="username">redpixel</span></strong> &raquo; </span><time datetime="2025-09-12T19:33:19+00:00">Fri Sep 12, 2025 7:33 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">I think we can be fairly confident that pin 119, along with pin 97, is not connected to anything in the Falcon PCB at least. Maybe it's correct that it is related to the GENLOCK status but it's an output reflecting the status of the register instead of an input? Might be possible to make a program which toggles $FFFF820A that mikro mentioned earlier and we can see if we measure something different on pin 119 <img class="smilies" src="./images/smilies/icon_smile.gif" width="15" height="15" alt=":)" title="Smile"><br>
+<br>
+As for the PCB, it looks like this:<br>
+<br>
+(czietz's gerbers, top side, pin 119 in yellow)
+<div class="inline-attachment"><!-- ia1 -->videl_top_side.PNG<!-- ia1 --></div>
+
+(bottom side, gerber in red, overlaid on photo of real PCB. Any via holes missing in the gerbers should be possible to spot. It should be in the yellow area most likely where we have a component pad)
+<div class="inline-attachment"><!-- ia0 -->videl_bottom_side.png<!-- ia0 --></div></div>
+
+			
+			
+						<div class="rules">You do not have the required permissions to view the files attached to this post.</div>			
+						
+										
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+				<div id="p485599" class="post has-profile bg2">
+		<div class="inner">
+
+		<dl class="postprofile" id="profile485599">
+			<dt class="has-profile-rank no-avatar">
+				<div class="avatar-container">
+																			</div>
+								<strong><span style="color: #660000;" class="username-coloured">czietz</span></strong>							</dt>
+
+						<dd class="profile-rank">Hardware Guru<br /><img src="./images/ranks/rank_gryzor.gif" alt="Hardware Guru" title="Hardware Guru" /></dd>			
+		<dd class="profile-posts"><strong>Posts:</strong> 3161</dd>		<dd class="profile-joined"><strong>Joined:</strong> Tue May 24, 2016 6:47 pm</dd>		
+		
+						
+						
+		</dl>
+
+		<div class="postbody">
+						<div id="post_content485599">
+
+					<h3 >
+						<a href="./viewtopic.php?p=485599#p485599">Re: Falcon custom ICs decap and Reverse Engineering</a>
+		</h3>
+
+								
+						<p class="author">
+									<span><i class="icon fa-file fa-fw icon-lightgray icon-md" aria-hidden="true"></i><span class="sr-only">Post</span></span>
+								<span class="responsive-hide">by <strong><span style="color: #660000;" class="username-coloured">czietz</span></strong> &raquo; </span><time datetime="2025-09-12T19:54:40+00:00">Fri Sep 12, 2025 7:54 pm</time>
+			</p>
+			
+			
+			
+			
+			<div class="content">Yes, it's only the designation as "input" that is wrong. I mean, even the description ("used to turn on the external Genlock logic") already sounds more like an output.</div>
+
+			
+			
+									
+						
+										
+						</div>
+
+		</div>
+
+				<div class="back2top">
+						<a href="#top" class="top" title="Top">
+				<i class="icon fa-chevron-circle-up fa-fw icon-gray" aria-hidden="true"></i>
+				<span class="sr-only">Top</span>
+			</a>
+					</div>
+		
+		</div>
+	</div>
+
+	
+
+	<div class="action-bar bar-bottom">
+	
+		
+	
+	
+	
+	
+			<div class="pagination">
+			69 posts
+							<ul>
+		<li class="active"><span>1</span></li>
+				<li><a class="button" href="./viewtopic.php?t=45152&amp;start=25" role="button">2</a></li>
+				<li><a class="button" href="./viewtopic.php?t=45152&amp;start=50" role="button">3</a></li>
+				<li class="arrow next"><a class="button button-icon-only" href="./viewtopic.php?t=45152&amp;start=25" rel="next" role="button"><i class="icon fa-chevron-right fa-fw" aria-hidden="true"></i><span class="sr-only">Next</span></a></li>
+	</ul>
+					</div>
+	</div>
+
+
+<div class="action-bar actions-jump">
+		<p class="jumpbox-return">
+		<a href="./viewforum.php?f=27" class="left-box arrow-left" accesskey="r">
+			<i class="icon fa-angle-left fa-fw icon-black" aria-hidden="true"></i><span>Return to “Professionals”</span>
+		</a>
+	</p>
+	
+		<div class="jumpbox dropdown-container dropdown-container-right dropdown-up dropdown-left dropdown-button-control" id="jumpbox">
+			<span title="Jump to" class="button button-secondary dropdown-trigger dropdown-select">
+				<span>Jump to</span>
+				<span class="caret"><i class="icon fa-sort-down fa-fw" aria-hidden="true"></i></span>
+			</span>
+		<div class="dropdown">
+			<div class="pointer"><div class="pointer-inner"></div></div>
+			<ul class="dropdown-contents">
+																				<li><a href="./viewforum.php?f=54" class="jumpbox-cat-link"> <span> Atari Forum News and Announcements</span></a></li>
+																<li><a href="./viewforum.php?f=28" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; News &amp; Announcements</span></a></li>
+																<li><a href="./viewforum.php?f=137" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Atari Inc.</span></a></li>
+																<li><a href="./viewforum.php?f=136" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Companies &amp; Shops</span></a></li>
+																<li><a href="./viewforum.php?f=139" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Product News</span></a></li>
+																<li><a href="./viewforum.php?f=132" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Magazines &amp; Books</span></a></li>
+																<li><a href="./viewforum.php?f=130" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Interviews &amp; Articles</span></a></li>
+																<li><a href="./viewforum.php?f=134" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Music</span></a></li>
+																<li><a href="./viewforum.php?f=131" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Events &amp; Happenings</span></a></li>
+																<li><a href="./viewforum.php?f=133" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; YouTube Videos</span></a></li>
+																<li><a href="./viewforum.php?f=138" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Other Sites</span></a></li>
+																<li><a href="./viewforum.php?f=135" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Other news</span></a></li>
+																<li><a href="./viewforum.php?f=29" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Website Discussions</span></a></li>
+																<li><a href="./viewforum.php?f=48" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Wiki Discussions</span></a></li>
+																<li><a href="./viewforum.php?f=65" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Wiki Chat</span></a></li>
+																<li><a href="./viewforum.php?f=66" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Wiki Requests</span></a></li>
+																<li><a href="./viewforum.php?f=67" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Wiki Rules</span></a></li>
+																<li><a href="./viewforum.php?f=73" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Wiki Tools</span></a></li>
+																<li><a href="./viewforum.php?f=55" class="jumpbox-cat-link"> <span> Atari ST Demoscene</span></a></li>
+																<li><a href="./viewforum.php?f=1" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Demos - General</span></a></li>
+																<li><a href="./viewforum.php?f=2" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Demos - Requests</span></a></li>
+																<li><a href="./viewforum.php?f=56" class="jumpbox-cat-link"> <span> Atari ST Gaming</span></a></li>
+																<li><a href="./viewforum.php?f=3" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Games - General</span></a></li>
+																<li><a href="./viewforum.php?f=17" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Doc Disks, Manuals &amp; Instructions</span></a></li>
+																<li><a href="./viewforum.php?f=64" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Cheats &amp; Saved-Game Editing</span></a></li>
+																<li><a href="./viewforum.php?f=140" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Level Maps</span></a></li>
+																<li><a href="./viewforum.php?f=4" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Games - Requests</span></a></li>
+																<li><a href="./viewforum.php?f=86" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Games - Compatibility Issues etc.</span></a></li>
+																<li><a href="./viewforum.php?f=42" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Menu Disks</span></a></li>
+																<li><a href="./viewforum.php?f=40" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; GameBaseST &amp; DemoBaseST</span></a></li>
+																<li><a href="./viewforum.php?f=53" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; STOT - ST Offline Tournament</span></a></li>
+																<li><a href="./viewforum.php?f=91" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; STOT Medals</span></a></li>
+																<li><a href="./viewforum.php?f=57" class="jumpbox-cat-link"> <span> Atari ST Professionals</span></a></li>
+																<li><a href="./viewforum.php?f=14" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Applications</span></a></li>
+																<li><a href="./viewforum.php?f=15" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Hardware</span></a></li>
+																<li><a href="./viewforum.php?f=74" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Guides</span></a></li>
+																<li><a href="./viewforum.php?f=16" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Coding</span></a></li>
+																<li><a href="./viewforum.php?f=68" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; 680x0</span></a></li>
+																<li><a href="./viewforum.php?f=142" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Disassembled Stuff</span></a></li>
+																<li><a href="./viewforum.php?f=143" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Demos</span></a></li>
+																<li><a href="./viewforum.php?f=144" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Music</span></a></li>
+																<li><a href="./viewforum.php?f=145" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Games</span></a></li>
+																<li><a href="./viewforum.php?f=146" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Hacks &amp; Cracks et al</span></a></li>
+																<li><a href="./viewforum.php?f=147" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Guides etc</span></a></li>
+																<li><a href="./viewforum.php?f=148" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Tools (Old &amp; New)</span></a></li>
+																<li><a href="./viewforum.php?f=69" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; GFA BASIC</span></a></li>
+																<li><a href="./viewforum.php?f=70" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; C / PASCAL etc.</span></a></li>
+																<li><a href="./viewforum.php?f=71" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; STOS</span></a></li>
+																<li><a href="./viewforum.php?f=72" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Other BASIC</span></a></li>
+																<li><a href="./viewforum.php?f=141" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Internet &amp; Networking</span></a></li>
+																<li><a href="./viewforum.php?f=129" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Alternative OS's and Desktops</span></a></li>
+																<li><a href="./viewforum.php?f=126" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; FreeMiNT support</span></a></li>
+																<li><a href="./viewforum.php?f=58" class="jumpbox-cat-link"> <span> Atari Music</span></a></li>
+																<li><a href="./viewforum.php?f=18" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Ym rockin'</span></a></li>
+																<li><a href="./viewforum.php?f=19" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; The Digital Department</span></a></li>
+																<li><a href="./viewforum.php?f=20" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Fading Twilight</span></a></li>
+																<li><a href="./viewforum.php?f=111" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; MIDI Software and Hardware</span></a></li>
+																<li><a href="./viewforum.php?f=79" class="jumpbox-cat-link"> <span> Atari Graphics</span></a></li>
+																<li><a href="./viewforum.php?f=80" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Galleries</span></a></li>
+																<li><a href="./viewforum.php?f=81" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Discussion</span></a></li>
+																<li><a href="./viewforum.php?f=82" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Requests</span></a></li>
+																<li><a href="./viewforum.php?f=149" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Ripped Graphics/Sprites</span></a></li>
+																<li><a href="./viewforum.php?f=59" class="jumpbox-cat-link"> <span> 32-bit machines (Atari Falcon / Atari TT / Clones)</span></a></li>
+																<li><a href="./viewforum.php?f=25" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Demos</span></a></li>
+																<li><a href="./viewforum.php?f=26" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Games</span></a></li>
+																<li><a href="./viewforum.php?f=27" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Professionals</span></a></li>
+																<li><a href="./viewforum.php?f=92" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; FireBee</span></a></li>
+																<li><a href="./viewforum.php?f=96" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Hades / Milan / Raven</span></a></li>
+																<li><a href="./viewforum.php?f=97" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; CT60 / CT63 Area</span></a></li>
+																<li><a href="./viewforum.php?f=100" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; SuperVidel</span></a></li>
+																<li><a href="./viewforum.php?f=119" class="jumpbox-cat-link"> <span> FPGA-based clones</span></a></li>
+																<li><a href="./viewforum.php?f=120" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; FPGA Chat</span></a></li>
+																<li><a href="./viewforum.php?f=114" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Suska</span></a></li>
+																<li><a href="./viewforum.php?f=115" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; MiST</span></a></li>
+																<li><a href="./viewforum.php?f=116" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Others</span></a></li>
+																<li><a href="./viewforum.php?f=117" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; MiSTer</span></a></li>
+																<li><a href="./viewforum.php?f=60" class="jumpbox-cat-link"> <span> Emulators &amp; Tools</span></a></li>
+																<li><a href="./viewforum.php?f=5" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Steem</span></a></li>
+																<li><a href="./viewforum.php?f=94" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Development</span></a></li>
+																<li><a href="./viewforum.php?f=112" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Support</span></a></li>
+																<li><a href="./viewforum.php?f=6" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; SainT</span></a></li>
+																<li><a href="./viewforum.php?f=51" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Hatari</span></a></li>
+																<li><a href="./viewforum.php?f=47" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Pasti &amp; VAPI</span></a></li>
+																<li><a href="./viewforum.php?f=90" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; PASTI Images</span></a></li>
+																<li><a href="./viewforum.php?f=8" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Other emulators &amp; tools</span></a></li>
+																<li><a href="./viewforum.php?f=95" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Kryoflux</span></a></li>
+																<li><a href="./viewforum.php?f=99" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; HxC Floppy Emulator</span></a></li>
+																<li><a href="./viewforum.php?f=102" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; SuperCard Pro Disk Copier</span></a></li>
+																<li><a href="./viewforum.php?f=104" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Floppy Disk Preservation</span></a></li>
+																<li><a href="./viewforum.php?f=103" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; CosmosEx</span></a></li>
+																<li><a href="./viewforum.php?f=61" class="jumpbox-cat-link"> <span> Various</span></a></li>
+																<li><a href="./viewforum.php?f=21" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; MJJ-Prod [FR]</span></a></li>
+																<li><a href="./viewforum.php?f=23" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Reservoir Gods</span></a></li>
+																<li><a href="./viewforum.php?f=46" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Paradize forum</span></a></li>
+																<li><a href="./viewforum.php?f=33" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; For sale / Wanted</span></a></li>
+																<li><a href="./viewforum.php?f=125" class="jumpbox-sub-link"><span class="spacer"></span><span class="spacer"></span> <span>&#8627; &nbsp; Found Ebay Links</span></a></li>
+																<li><a href="./viewforum.php?f=30" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Chat forum [ENG]</span></a></li>
+																<li><a href="./viewforum.php?f=39" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Chat forum [FR]</span></a></li>
+																<li><a href="./viewforum.php?f=127" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Hall of Heroes</span></a></li>
+																<li><a href="./viewforum.php?f=87" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Guardians of the PaST</span></a></li>
+																<li><a href="./viewforum.php?f=88" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Gallery</span></a></li>
+																<li><a href="./viewforum.php?f=93" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; Non Atari Platforms</span></a></li>
+																<li><a href="./viewforum.php?f=98" class="jumpbox-sub-link"><span class="spacer"></span> <span>&#8627; &nbsp; The Atari 8bit corner</span></a></li>
+											</ul>
+		</div>
+	</div>
+
+	</div>
+
+
+
+
+		<script>
+(function() {
+		var links = document.querySelectorAll('dl.postprofile dd.profile-contact a[href]');
+		for (var i = 0; i < links.length; i++) {
+		var href = links[i].getAttribute('href');
+		if (/^https?:\/\/.+/.test(href)) {
+			links[i].target = '_blank';			links[i].rel = 'nofollow';								}
+	}
+})();
+</script>
+	</div>
+
+
+<div id="page-footer" class="page-footer" role="contentinfo">
+	<div class="navbar" role="navigation">
+	<div class="inner">
+
+	<ul id="nav-footer" class="nav-footer linklist" role="menubar">
+		<li class="breadcrumbs">
+							<span class="crumb"><a href="https://www.atari-forum.com" data-navbar-reference="home"><i class="icon fa-home fa-fw" aria-hidden="true"></i><span>Atari Forum</span></a></span>									<span class="crumb"><a href="./index.php" data-navbar-reference="index"><span>Board index</span></a></span>					</li>
+		
+				<li class="rightside">All times are <span title="UTC">UTC</span></li>
+															<li class="rightside" data-last-responsive="true">
+				<a href="./memberlist.php?mode=contactadmin" role="menuitem">
+					<i class="icon fa-envelope fa-fw" aria-hidden="true"></i><span>Contact us</span>
+				</a>
+			</li>
+			</ul>
+
+	</div>
+</div>
+
+	<div class="copyright">
+				<p class="footer-row">
+			<span class="footer-copyright">Powered by <a href="https://www.phpbb.com/">phpBB</a>&reg; Forum Software &copy; phpBB Limited</span>
+		</p>
+				<p class="footer-row">
+	<span>phpBB Two Factor Authentication &copy; <a href="https://www.phpbbextensions.io/" target="_blank">paul999</a></span>
+</p>
+		<p class="footer-row" role="menu">
+			<a class="footer-link" href="./ucp.php?mode=privacy" title="Privacy" role="menuitem">
+				<span class="footer-link-text">Privacy</span>
+			</a>
+			|
+			<a class="footer-link" href="./ucp.php?mode=terms" title="Terms" role="menuitem">
+				<span class="footer-link-text">Terms</span>
+			</a>
+		</p>
+					</div>
+
+	<div id="darkenwrapper" class="darkenwrapper" data-ajax-error-title="AJAX error" data-ajax-error-text="Something went wrong when processing your request." data-ajax-error-text-abort="User aborted request." data-ajax-error-text-timeout="Your request timed out; please try again." data-ajax-error-text-parsererror="Something went wrong with the request and the server returned an invalid reply.">
+		<div id="darken" class="darken">&nbsp;</div>
+	</div>
+
+	<div id="phpbb_alert" class="phpbb_alert" data-l-err="Error" data-l-timeout-processing-req="Request timed out.">
+		<a href="#" class="alert_close">
+			<i class="icon fa-times-circle fa-fw" aria-hidden="true"></i>
+		</a>
+		<h3 class="alert_title">&nbsp;</h3><p class="alert_text"></p>
+	</div>
+	<div id="phpbb_confirm" class="phpbb_alert">
+		<a href="#" class="alert_close">
+			<i class="icon fa-times-circle fa-fw" aria-hidden="true"></i>
+		</a>
+		<div class="alert_text"></div>
+	</div>
+</div>
+
+</div>
+
+<div>
+	<a id="bottom" class="anchor" accesskey="z"></a>
+	</div>
+
+<script src="./assets/javascript/jquery-3.7.1.min.js?assets_version=196"></script>
+<script src="./assets/javascript/core.js?assets_version=196"></script>
+
+	<script src="./assets/cookieconsent/cookieconsent.min.js?assets_version=196"></script>
+	<script>
+		if (typeof window.cookieconsent === "object") {
+			window.addEventListener("load", function(){
+				window.cookieconsent.initialise({
+					"palette": {
+						"popup": {
+							"background": "#0F538A"
+						},
+						"button": {
+							"background": "#E5E5E5"
+						}
+					},
+					"theme": "classic",
+					"content": {
+						"message": "This\u0020website\u0020uses\u0020cookies\u0020to\u0020ensure\u0020you\u0020get\u0020the\u0020best\u0020experience\u0020on\u0020our\u0020website.",
+						"dismiss": "Got\u0020it\u0021",
+						"link": "Learn\u0020more",
+						"href": "./ucp.php?mode=privacy"
+					}
+				});
+			});
+		}
+	</script>
+
+	<div id="breadcrumb-menu">
+		<ul id="crumb-index" class="hidden">
+			<li class="children current"><a href="./index.php">Forums</a><div class="touch-trigger button"></div>
+<ul id="crumb-59" class="fly-out dropdown-contents hidden"><li class="children"><a href="./viewforum.php?f=54">Atari Forum News and Announcements</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li class="children"><a href="./viewforum.php?f=28">News &amp; Announcements</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li><a href="./viewforum.php?f=137">Atari Inc.</a></li>
+<li><a href="./viewforum.php?f=136">Companies &amp; Shops</a></li>
+<li><a href="./viewforum.php?f=139">Product News</a></li>
+<li><a href="./viewforum.php?f=132">Magazines &amp; Books</a></li>
+<li><a href="./viewforum.php?f=130">Interviews &amp; Articles</a></li>
+<li><a href="./viewforum.php?f=134">Music</a></li>
+<li><a href="./viewforum.php?f=131">Events &amp; Happenings</a></li>
+<li><a href="./viewforum.php?f=133">YouTube Videos</a></li>
+<li><a href="./viewforum.php?f=138">Other Sites</a></li>
+<li><a href="./viewforum.php?f=135">Other news</a></li>
+</ul></li>
+<li><a href="./viewforum.php?f=29">Website Discussions</a></li>
+<li class="children"><a href="./viewforum.php?f=48">Wiki Discussions</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li><a href="./viewforum.php?f=65">Wiki Chat</a></li>
+<li><a href="./viewforum.php?f=66">Wiki Requests</a></li>
+<li><a href="./viewforum.php?f=67">Wiki Rules</a></li>
+<li><a href="./viewforum.php?f=73">Wiki Tools</a></li>
+</ul></li>
+</ul></li>
+<li class="children"><a href="./viewforum.php?f=55">Atari ST Demoscene</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li><a href="./viewforum.php?f=1">Demos - General</a></li>
+<li><a href="./viewforum.php?f=2">Demos - Requests</a></li>
+</ul></li>
+<li class="children"><a href="./viewforum.php?f=56">Atari ST Gaming</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li class="children"><a href="./viewforum.php?f=3">Games - General</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li><a href="./viewforum.php?f=17">Doc Disks, Manuals &amp; Instructions</a></li>
+<li><a href="./viewforum.php?f=64">Cheats &amp; Saved-Game Editing</a></li>
+<li><a href="./viewforum.php?f=140">Level Maps</a></li>
+</ul></li>
+<li><a href="./viewforum.php?f=4">Games - Requests</a></li>
+<li><a href="./viewforum.php?f=86">Games - Compatibility Issues etc.</a></li>
+<li><a href="./viewforum.php?f=42">Menu Disks</a></li>
+<li><a href="./viewforum.php?f=40">GameBaseST &amp; DemoBaseST</a></li>
+<li class="children"><a href="./viewforum.php?f=53">STOT - ST Offline Tournament</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li><a href="./viewforum.php?f=91">STOT Medals</a></li>
+</ul></li>
+</ul></li>
+<li class="children"><a href="./viewforum.php?f=57">Atari ST Professionals</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li><a href="./viewforum.php?f=14">Applications</a></li>
+<li class="children"><a href="./viewforum.php?f=15">Hardware</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li><a href="./viewforum.php?f=74">Guides</a></li>
+</ul></li>
+<li class="children"><a href="./viewforum.php?f=16">Coding</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li class="children"><a href="./viewforum.php?f=68">680x0</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li><a href="./viewforum.php?f=142">Disassembled Stuff</a></li>
+<li><a href="./viewforum.php?f=143">Demos</a></li>
+<li><a href="./viewforum.php?f=144">Music</a></li>
+<li><a href="./viewforum.php?f=145">Games</a></li>
+<li><a href="./viewforum.php?f=146">Hacks &amp; Cracks et al</a></li>
+<li><a href="./viewforum.php?f=147">Guides etc</a></li>
+<li><a href="./viewforum.php?f=148">Tools (Old &amp; New)</a></li>
+</ul></li>
+<li><a href="./viewforum.php?f=69">GFA BASIC</a></li>
+<li><a href="./viewforum.php?f=70">C / PASCAL etc.</a></li>
+<li><a href="./viewforum.php?f=71">STOS</a></li>
+<li><a href="./viewforum.php?f=72">Other BASIC</a></li>
+</ul></li>
+<li><a href="./viewforum.php?f=141">Internet &amp; Networking</a></li>
+<li><a href="./viewforum.php?f=129">Alternative OS's and Desktops</a></li>
+<li><a href="./viewforum.php?f=126">FreeMiNT support</a></li>
+</ul></li>
+<li class="children"><a href="./viewforum.php?f=58">Atari Music</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li><a href="./viewforum.php?f=18">Ym rockin'</a></li>
+<li><a href="./viewforum.php?f=19">The Digital Department</a></li>
+<li><a href="./viewforum.php?f=20">Fading Twilight</a></li>
+<li><a href="./viewforum.php?f=111">MIDI Software and Hardware</a></li>
+</ul></li>
+<li class="children"><a href="./viewforum.php?f=79">Atari Graphics</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li><a href="./viewforum.php?f=80">Galleries</a></li>
+<li><a href="./viewforum.php?f=81">Discussion</a></li>
+<li><a href="./viewforum.php?f=82">Requests</a></li>
+<li><a href="./viewforum.php?f=149">Ripped Graphics/Sprites</a></li>
+</ul></li>
+<li class="children current"><a href="./viewforum.php?f=59">32-bit machines (Atari Falcon / Atari TT / Clones)</a><div class="touch-trigger button"></div>
+<ul id="crumb-27" class="fly-out dropdown-contents hidden"><li><a href="./viewforum.php?f=25">Demos</a></li>
+<li><a href="./viewforum.php?f=26">Games</a></li>
+<li class=" current"><a href="./viewforum.php?f=27">Professionals</a></li>
+<li><a href="./viewforum.php?f=92">FireBee</a></li>
+<li><a href="./viewforum.php?f=96">Hades / Milan / Raven</a></li>
+<li class="children"><a href="./viewforum.php?f=97">CT60 / CT63 Area</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li><a href="./viewforum.php?f=100">SuperVidel</a></li>
+</ul></li>
+</ul></li>
+<li class="children"><a href="./viewforum.php?f=119">FPGA-based clones</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li><a href="./viewforum.php?f=120">FPGA Chat</a></li>
+<li><a href="./viewforum.php?f=114">Suska</a></li>
+<li><a href="./viewforum.php?f=115">MiST</a></li>
+<li><a href="./viewforum.php?f=116">Others</a></li>
+<li><a href="./viewforum.php?f=117">MiSTer</a></li>
+</ul></li>
+<li class="children"><a href="./viewforum.php?f=60">Emulators &amp; Tools</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li class="children"><a href="./viewforum.php?f=5">Steem</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li><a href="./viewforum.php?f=94">Development</a></li>
+<li><a href="./viewforum.php?f=112">Support</a></li>
+</ul></li>
+<li><a href="./viewforum.php?f=6">SainT</a></li>
+<li><a href="./viewforum.php?f=51">Hatari</a></li>
+<li class="children"><a href="./viewforum.php?f=47">Pasti &amp; VAPI</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li><a href="./viewforum.php?f=90">PASTI Images</a></li>
+</ul></li>
+<li><a href="./viewforum.php?f=8">Other emulators &amp; tools</a></li>
+<li><a href="./viewforum.php?f=95">Kryoflux</a></li>
+<li><a href="./viewforum.php?f=99">HxC Floppy Emulator</a></li>
+<li><a href="./viewforum.php?f=102">SuperCard Pro Disk Copier</a></li>
+<li><a href="./viewforum.php?f=104">Floppy Disk Preservation</a></li>
+<li><a href="./viewforum.php?f=103">CosmosEx</a></li>
+</ul></li>
+<li class="children"><a href="./viewforum.php?f=61">Various</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li><a href="./viewforum.php?f=21">MJJ-Prod [FR]</a></li>
+<li><a href="./viewforum.php?f=23">Reservoir Gods</a></li>
+<li><a href="./viewforum.php?f=46">Paradize forum</a></li>
+<li class="children"><a href="./viewforum.php?f=33">For sale / Wanted</a><div class="touch-trigger button"></div>
+<ul class="fly-out dropdown-contents hidden"><li><a href="./viewforum.php?f=125">Found Ebay Links</a></li>
+</ul></li>
+<li><a href="./viewforum.php?f=30">Chat forum [ENG]</a></li>
+<li><a href="./viewforum.php?f=39">Chat forum [FR]</a></li>
+<li><a href="./viewforum.php?f=127">Hall of Heroes</a></li>
+<li><a href="./viewforum.php?f=87">Guardians of the PaST</a></li>
+<li><a href="./viewforum.php?f=88">Gallery</a></li>
+<li><a href="./viewforum.php?f=93">Non Atari Platforms</a></li>
+<li><a href="./viewforum.php?f=98">The Atari 8bit corner</a></li>
+</ul></li>
+</ul></li>
+
+
+					</ul>
+	</div>
+
+		<script>
+(function($) {  // Avoid conflicts with other libraries
+
+'use strict';
+
+	phpbb.addAjaxCallback('reporttosfs', function(data) {
+		if (data.postid !== "undefined") {
+			$('#sfs' + data.postid).hide();
+			phpbb.closeDarkenWrapper(5000);
+		}
+	});
+
+})(jQuery);
+</script><div class="scroll-btn"><div class="scroll-btn-arrow"></div></div>
+
+<script>
+
+(function($) { // Avoid conflicts with other libraries
+
+'use strict';
+
+$(function() {
+	var settings = {
+			min: 200,
+			scrollSpeed: 400
+		},
+		toTop = $('.scroll-btn'),
+		toTopHidden = true;
+
+	$(window).scroll(function() {
+		var pos = $(this).scrollTop();
+		if (pos > settings.min && toTopHidden) {
+			toTop.stop(true, true).fadeIn();
+			toTopHidden = false;
+		} else if(pos <= settings.min && !toTopHidden) {
+			toTop.stop(true, true).fadeOut();
+			toTopHidden = true;
+		}
+	});
+
+	toTop.bind('click touchstart', function() {
+		$('html, body').animate({
+			scrollTop: 0
+		}, settings.scrollSpeed);
+	});
+});
+
+})(jQuery);
+
+</script>
+
+<script src="./ext/phpbb/collapsiblecategories/styles/all/template/js/collapsiblecategories.js?assets_version=196"></script>
+<script src="./styles/prosilver/template/forum_fn.js?assets_version=196"></script>
+<script src="./styles/prosilver/template/ajax.js?assets_version=196"></script>
+<script src="./ext/paybas/breadcrumbmenu/styles/all/template/jquery-ui.min.js?assets_version=196"></script>
+<script src="./ext/paybas/breadcrumbmenu/styles/all/template/breadcrumb-menu.js?assets_version=196"></script>
+
+
+<script>
+	lightbox.option({
+		'albumLabel': 'Image\u0020\u00251\u0020of\u0020\u00252'
+	});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>The Secret GAMECART Register — Spelunking in Atari STE Silicon – Keli Hlodversson – tinkerer</title>
+
+        <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+
+    
+    <meta name="description" content="
+
+" />
+    <meta property="og:description" content="
+
+" />
+    
+    <meta name="author" content="Keli Hlodversson" />
+
+    
+    <meta property="og:title" content="The Secret GAMECART Register — Spelunking in Atari STE Silicon" />
+    <meta property="twitter:title" content="The Secret GAMECART Register — Spelunking in Atari STE Silicon" />
+    
+
+    
+
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+    <link rel="alternate" type="application/rss+xml" title="Keli Hlodversson - tinkerer" href="/feed.xml" />
+
+    <!-- Created with Jekyll Now - http://github.com/barryclark/jekyll-now -->
+  </head>
+
+  <body>
+    <div class="wrapper-masthead">
+      <div class="container">
+        <header class="masthead clearfix">
+          <a href="/" class="site-avatar"><img src="https://avatars0.githubusercontent.com/u/3471537?v=4&s=460" /></a>
+
+          <div class="site-info">
+            <h1 class="site-name"><a href="/">Keli Hlodversson</a></h1>
+            <p class="site-description">tinkerer</p>
+          </div>
+
+          <nav>
+            <a href="/">Blog</a>
+            <a href="/about">About</a>
+          </nav>
+        </header>
+      </div>
+    </div>
+
+    <div id="main" role="main" class="container">
+      <article class="post">
+  <h1>The Secret GAMECART Register — Spelunking in Atari STE Silicon</h1>
+
+  <div class="entry">
+    <p><img src="/images/GAMECART.png" alt="Inside the STE GLUE/MMU chip" title="Inside the STE GLUE/MMC chip" /></p>
+
+<!--break-->
+
+<p>Deep inside the silicon of the Atari STE’s GLUE/MMU chip, there is a register
+that nobody seems to have documented. Writing a single bit to address 0xFF9000
+activates a signal called GAMECART — and nobody knows quite what it was for.</p>
+
+<p>Here’s how I found it.</p>
+
+<h2 id="background-the-dream-of-a-better-mmu">Background: the dream of a better MMU</h2>
+
+<p>As a long-time Atari ST owner I’ve spent more hours than I should admit with
+emulators, clones, and retrocomputing rabbit holes. So when I stumbled across the
+news that several of Atari’s custom ASIC designs had been
+<a href="https://www.chzsoft.de/asic-web/">uncovered and converted to PDF schematics by Christian Zietz</a>,
+I was immediately excited. Then I downloaded the files, browsed through them briefly,
+and almost immediately forgot about them.</p>
+
+<p>What brought me back was a <a href="https://www.facebook.com/groups/133161394213/permalink/10155613110164214/">discussion on the Atari ST and STe Users Facebook group</a>.
+<a href="https://exxosnews.blogspot.dk/">Chris Swinson</a> had shared an old design from
+<a href="http://atari4ever.free.fr/hardware/zip/16mbram.zip">Atarihacks</a> that attempted to
+hack in support for more than the ST’s maximum 4MB of RAM, by generating missing
+DRAM signals from pins 23 and 22 on the CPU. Nobody who’d tried building it had
+gotten it to work, but it seemed tantalizingly close — mostly a timing problem.</p>
+
+<p>The deeper issue, though, is that the CPU isn’t the only thing that needs to
+address DRAM. The Blitter has the address pins for it, but the DMA and Shifter
+generate no address signals at all. The MMU has internal registers for managing
+the video buffer and DMA transfers — and since those registers are buried inside
+the chip, there’s no way to add the missing address bits without replacing the
+MMU entirely.</p>
+
+<p>Which brought me back to those schematics.</p>
+
+<h2 id="reading-the-silicon">Reading the silicon</h2>
+
+<p>In a moment of hubris, I decided I’d translate the entire GLUE/MMU design into
+Verilog, find a suitable CPLD, and build a functional drop-in clone. Following
+<a href="https://exxosnews.blogspot.dk/2017/07/ste-booster-powered-by-altera-test.html">Chris’ overclocking work</a>,
+such a chip could even be enhanced to support faster clocks and the full 24-bit
+address space of the M68000.</p>
+
+<p>The small problem: I had never touched an HDL in my life. I was learning Verilog
+at the same time as learning to read 1980s hand-drawn chip schematics. I do like
+jumping in at the deep end.</p>
+
+<p>So I started small. The STE’s combined GLUE/MMU ASIC was the only version I had
+access to. Page 2 of the schematics turned out to be address decoding — relatively
+tractable. Tracing back from the pads, I confirmed that the /RAM pin activates for
+addresses 0x000008 to 0x3FFFFF. The hand-drawn logic is extremely low level —
+chains of AND, OR, XOR gates, buffers, inverters, and curiously long strings of
+NOT gates (buffering? deliberate delay?). But it was readable.</p>
+
+<h2 id="the-rom-map-gets-strange">The ROM map gets strange</h2>
+
+<p>Next I turned to the /ROMx pads, and immediately noticed something odd: the STE’s
+GST MCU had <em>more</em> /ROMx select signals than the original ST GLUE chip — despite
+the STE actually using <em>fewer</em> ROM select pins in practice.</p>
+
+<p>The original ST used three pairs of 32KB ROMs for 192KB of TOS. Later models
+consolidated these with larger chips and TTL logic. The STE moved the ROM base
+from 0xFC0000 to 0xE00000, making room for a 256KB ROM on /ROM2. The /ROM0 and
+/ROM1 pins went unconnected — but the schematics revealed they still map to
+0xE80000–0xEBFFFF and 0xE40000–0xE7FFFF respectively, meaning the STE could
+theoretically address 768KB of ROM if those pins were brought out.</p>
+
+<p>Then there were the new /ROM5 and /ROM6 pins, which I traced to a 512KB region
+at 0xD00000–0xD7FFFF. Probing that range was apparently
+<a href="http://info-coach.fr/atari/hardware/STE-HW.php">already known</a> from hardware
+experiments, but nobody had explained why those pins were added.</p>
+
+<h2 id="gamecart">GAMECART?!</h2>
+
+<p><img src="/images/ROM3-4.png" alt="cartridge or game cart?" title="cartridge or game cart?" /></p>
+
+<p>This is where it got interesting. The decoding for /ROM3 and /ROM4 — the
+cartridge port selects used on both ST and STE — had extra logic I didn’t expect.
+The first part behaved normally, mapping to the traditional 0xFB0000 and 0xFA0000
+cartridge address spaces. But there was a second path, controlled by a signal
+named GAMECART, that could remap those pins to 0xD80000–0xDFFFFF instead —
+combining with the /ROM5 and /ROM6 region to make a full megabyte of
+previously mysterious address space suddenly usable.</p>
+
+<p>The name alone raises questions. Did Atari plan a larger game cartridge for the
+STE? Were they considering a game console variant of the hardware? I traced the
+GAMECART signal back to page 10 of the schematics — the section visible in the
+image at the top of this article. It originates from a flip flop, activated by
+writing to bit 8 at address 0xFF9000.</p>
+
+<p>As far as I can tell, this has never been publicly documented. If anyone owns an
+STE, it would be fascinating to test: write byte 1 to 0xFF9000 and see whether
+any connected cartridge relocates to 0xD80000.</p>
+
+<h2 id="where-this-leaves-things">Where this leaves things</h2>
+
+<p>I’ve written Verilog modules for the address decoding and some of the clock
+signal generation uncovered above, and simulation confirms the signals activate
+correctly. Whether I’ll ever translate the entire design is another question —
+Chris reminded me that mature FPGA implementations of the ST already exist, most
+notably the <a href="https://www.experiment-s.de/en/gallery/">Suska project</a>, which was
+built by replacing the original ST motherboard’s chips piece by piece.</p>
+
+<p>But this kind of schematic archaeology has value beyond any single project.
+Undocumented registers like GAMECART are exactly what emulators miss — and
+finding them in the original silicon is the only reliable way to know they exist.</p>
+
+<p>A SUPER-MMU in a CPLD is still on the table. It’ll just require better soldering
+skills than I currently have, and a willingness to work with chips that come in
+packages seemingly designed to be impossible. One step at a time.</p>
+
+<h2 id="update">Update</h2>
+
+<p>Literally minutes after <a href="https://www.facebook.com/groups/133161394213/permalink/10155663972899214/">sharing this article</a>
+on the <a href="https://www.facebook.com/groups/133161394213/">Atari ST and STe users Facebook group</a>,
+Troed Sångberg pointed out <a href="http://atari-forum.com/viewtopic.php?f=15&amp;t=32054">this thread on atari-forum.com</a>
+posted by Christian Zietz himself, discussing the very same GAMECART register and its implications.</p>
+
+  </div>
+
+  <div class="date">
+    Written on August  9, 2017
+  </div>
+
+  
+</article>
+
+    </div>
+
+    <div class="wrapper-footer">
+      <div class="container">
+        <footer class="footer">
+          
+
+<a href="https://www.facebook.com/keli.hlodversson"><i class="svg-icon facebook"></i></a>
+
+<a href="https://github.com/kelihlodversson"><i class="svg-icon github"></i></a>
+
+<a href="https://www.linkedin.com/in/hlodversson"><i class="svg-icon linkedin"></i></a>
+
+
+
+
+<a href="https://youtube.com/channel/UChTPGHCRCoIohbuDmOQ8-uQ"><i class="svg-icon youtube"></i></a>
+
+        </footer>
+      </div>
+    </div>
+
+    
+
+  </body>
+</html>
