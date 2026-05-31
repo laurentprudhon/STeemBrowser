@@ -1,0 +1,100 @@
+# Atari ST Floppy Disk Drive (FDD) Analysis
+
+This document provides a detailed technical analysis of the floppy disk subsystem in the Atari ST, focusing on the data flow and signal chain between the CPU, the Western Digital WD1772 Floppy Disk Controller (FDC), the DMA controller, and the physical floppy drive.
+
+## 1. Hardware Interface: CPU $\leftrightarrow$ FDC Controller
+
+The CPU interacts with the WD1772 FDC through a set of memory-mapped registers. These registers allow the CPU to send commands, specify targets (track/sector), and monitor the state of the controller.
+
+### Register Map
+The FDC registers are located at the top of the memory map:
+
+| Address | Register | R/W | Description |
+| :--- | :--- | :--- | :--- |
+| `0xFF8604` | **Status** | R | Current state of the FDC (Busy, DRQ, Error flags). |
+| `0xFF8604` | **Command** | W | Command byte to initiate FDC operations. |
+| `0xFF8605` | **Track** | R/W | Target track number for seek/read/write operations. |
+| `0xFF8606` | **Sector** | R/W | Target sector number for read/write operations. |
+| `0xFF8607` | **Data** | R/W | Data port for Programmed I/O (PIO) transfers. |
+
+**Note**: The Status and Command registers share the same address. The FDC distinguishes between them based on the CPU's read/write signal.
+
+### Signal Chain
+- **CPU $\rightarrow$ FDC**: The CPU writes to the registers to configure the FDC.
+- **FDC $\rightarrow$ CPU (Interrupts)**: The FDC signals the CPU via an Interrupt Request (IRQ) line connected to the MFP (Multi-Function Peripheral). When a command completes or an error occurs, the FDC sets the IRQ line, and the MFP triggers a CPU interrupt.
+
+## 2. Process of Reading a Sector
+
+Reading a sector is a multi-stage process involving motor control, head positioning, and synchronized data transfer.
+
+### Signal Flow and Sequence
+1. **Command Issuance**: The CPU writes the target track to the Track Register, target sector to the Sector Register, and then writes a **Read Sector** command (Type II) to the Command Register.
+2. **Motor Spin-up**: If the motor is off, the FDC turns it on and waits for it to reach operational speed (typically 300 RPM). This takes approximately 1 second (6 revolutions).
+3. **Head Positioning**: The FDC steps the head to the requested track. If the `V` (Verify) flag is set, the FDC reads the first ID field it finds to verify the head is on the correct track.
+4. **ID Field Search**: The FDC scans the rotating disk for an **ID Field** that matches the requested track and sector number.
+5. **ID Validation**: The FDC calculates the CRC of the ID field and compares it to the stored CRC. If they match, the FDC prepares to read data.
+6. **DAM Detection**: The FDC looks for the **Data Address Mark (DAM)**, which serves as the precise start point for the data field.
+7. **Data Transfer (FDC $\rightarrow$ DMA $\rightarrow$ RAM)**:
+    - The FDC reads bytes from the disk using MFM decoding.
+    - Bytes are pushed into the **DMA FIFO** (`Dma.AddToFifo` in `steem/dma.cpp`).
+    - The DMA controller transfers these bytes in 16-byte bursts from the FIFO to the system RAM (`TDma::TransferBytes`).
+8. **Completion**: Once the sector is fully read, the FDC generates an interrupt to notify the CPU.
+
+## 3. Process of Writing a Sector
+
+Writing a sector follows a similar setup but reverses the data flow.
+
+### Signal Flow and Sequence
+1. **Configuration**: The CPU sets the Track and Sector registers and writes the **Write Sector** command to the Command Register.
+2. **Preparation**: The FDC ensures the motor is spinning and the head is positioned at the correct track.
+3. **Data Provisioning (RAM $\rightarrow$ DMA $\rightarrow$ FDC)**:
+    - The DMA controller fetches data from system RAM and fills the **DMA FIFO** (`TDma::TransferBytes` in `steem/dma.cpp`).
+    - The FDC requests data from the DMA via the **DRQ (Data Request)** signal.
+    - The FDC pulls bytes from the FIFO (`Dma.GetFifoByte`) to write to the disk.
+4. **Wait for ID**: The FDC waits for the disk to rotate until the target sector's ID field passes under the head.
+5. **Writing Data**:
+    - The FDC writes a lead-in gap and the Data Address Mark (DAM).
+    - The FDC writes the actual data bytes retrieved from the DMA FIFO.
+6. **Finalization**: After the data is written, the FDC calculates and writes a 16-bit CRC and a final `$FF` byte.
+7. **Completion**: The FDC generates an interrupt to notify the CPU that the write operation is finished.
+
+## 4. The Role of DMA (Direct Memory Access)
+
+Because floppy disk data rates are fixed by the rotation speed of the disk, the CPU cannot reliably "keep up" with the timing requirements using Programmed I/O without risking data loss. The DMA controller acts as a high-speed buffer.
+
+### Interaction Mechanics
+- **FIFO Buffers**: The DMA uses two 16-byte FIFO buffers to decouple the FDC's byte-by-byte stream from the CPU's word-oriented memory access.
+- **Double Buffering**: While the FDC is consuming/filling one FIFO, the DMA can be transferring data between the other FIFO and RAM.
+- **Bus Arbitration**: The DMA requests access to the system bus to perform memory transfers. In the Atari ST, the FDC/DMA has high priority to ensure no bytes are missed during disk operations.
+- **Control**: The CPU initializes the DMA by setting the starting memory address and the number of 512-byte chunks to transfer.
+
+## 5. Error Handling and Status Indication
+
+The FDC monitors the physical state of the drive and the integrity of the data, reporting issues through the **Status Register** (`0xFF8604`).
+
+### Key Status Bits
+- **BSY (Busy)**: Set while the FDC is executing a command.
+- **DRQ (Data Request)**: Set when the FDC is ready to transfer a byte (Read) or is waiting for one (Write).
+- **CRCERR (CRC Error)**: Set if a sector's CRC does not match, indicating data corruption.
+- **SE (Seek Error)**: Set if the head fails to reach the target track or if the verify stage fails.
+- **WP (Write Protect)**: Set if a write command is issued to a write-protected disk.
+
+### Error Recovery
+When the CPU detects an error bit in the status register, it may attempt to retry the operation. In Steem's emulation, `fdc_handle_file_error` simulates low-level file access errors and can trigger an automatic "re-insertion" of the disk image to recover from interrupted file handles.
+
+## 6. Timing Requirements and Data Format
+
+The Atari ST uses standard 3.5" floppy disk specifications with specific constraints.
+
+### Physical Timing
+- **Rotation Speed**: 300 RPM.
+- **Rotation Period**: One full revolution takes 200ms.
+- **Index Pulse**: A hardware signal (Index Pulse) occurs once per revolution, used by the FDC to synchronize the start of track-wide operations.
+
+### Data Format
+- **Encoding**: **MFM (Modified Frequency Modulation)**. This encoding ensures there are enough transitions in the bitstream for the FDC to maintain clock synchronization.
+- **Sector Layout**:
+    - **ID Field**: A 6-byte header containing Track, Side, Sector number, and Length Code, followed by a CRC.
+    - **Data Field**: The actual payload (typically 512 bytes).
+    - **Gaps**: Areas of non-data (synced gaps) that allow the head to settle and the FDC to synchronize before reading a field.
+- **Sector Sizes**: Supports 128, 256, 512, or 1024 bytes per sector.

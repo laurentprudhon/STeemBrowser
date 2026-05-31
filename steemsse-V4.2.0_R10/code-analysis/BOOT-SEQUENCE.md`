@@ -1,0 +1,100 @@
+# Atari ST Boot Sequence Analysis
+
+This document provides a detailed technical analysis of the Atari ST boot sequence, tracing the signal chain from power-on to the execution of the TOS (The Operating System) ROM. The analysis is based on the implementation in Steem SSE and the hardware specifications preserved in the source code.
+
+## 1. Power-On State and Initial Reset Vector
+
+### CPU Initial State
+Upon power-on (Cold Reset), the Motorola 68000 CPU is placed into a known initial state:
+- **Mode**: Supervisor Mode (S-bit = 1).
+- **Interrupts**: Disabled. The Interrupt Priority Level (IPL) is set to 7 (masking all maskable interrupts).
+- **Status Register (SR)**: Initialized to `0x2700`.
+- **Processing State**: Normal.
+
+### The Reset Vector
+The MC68000 requires two initial values to begin execution, which it fetches from the very bottom of the address space:
+- **Initial Supervisor Stack Pointer (SSP)**: Fetched from address `0x000000` (Long word).
+- **Initial Program Counter (PC)**: Fetched from address `0x000004` (Long word).
+
+In the Atari ST, these vectors are located in the TOS ROM. In Steem SSE, these are handled in `reset.cpp` and `cpu.cpp`. To optimize the emulation of core routines, Steem SSE copies these ROM vectors into the first 8 bytes of RAM during `power_on()`:
+```cpp
+LPEEK(0) = ROM_LPEEK(0); // Initial SSP
+LPEEK(4) = ROM_LPEEK(4); // Initial PC
+```
+
+## 2. Hardware Reset to TOS Execution Transition
+
+The transition from hardware reset to OS execution follows a precise sequence of hardware and software steps.
+
+### Step 1: Hardware Initialization
+The system asserts a reset signal to all peripheral chips. In Steem SSE, this is managed by `reset_peripherals(true)`, which resets:
+- **Glue Chip**: Initializes address decoding and video timing.
+- **MFP (MC68901)**: Resets timers and interrupt controllers.
+- **MMU**: Resets memory configuration.
+- **Shifter**: Resets video generation and palette.
+- **PSG (YM2149)**: Resets sound generator.
+
+### Step 2: Early Boot Logic (Low-Level ROM)
+Once the CPU begins executing at the address specified by the reset vector, the following operations occur:
+1. **Peripheral Reset**: A `RESET` instruction is executed to ensure all peripheral chips are synchronized.
+2. **Diagnostic Check**: The CPU checks for a magic number (`0xFA52235F`) on the cartridge port. If present, the system jumps to the diagnostic cartridge.
+3. **Warm Start Detection**: The CPU checks for "Magic Numbers" at specific RAM addresses to determine if this is a warm reset (preserving memory) or a cold reset:
+   - `0x000420`: Must contain `0x7520191F3`
+   - `0x00043A`: Must contain `0x237698AA`
+   - If valid, the memory configuration is restored from `0x000424`.
+4. **Custom Reset Vector**: The system checks `0x000426` for the magic number `0x31415926`. If found, it jumps to the vector stored at `0x00042A`.
+
+### Step 3: Hardware Configuration
+The system then initializes the core peripherals:
+- **Sound**: YM2149 PSG is initialized.
+- **Video**: The vertical synchronization frequency in `syncmode` (`0xFF820A`) is set to 50Hz (PAL) or 60Hz (NTSC). The Shifter palette and Base registers (`0xFF8201`/`0xFF8203`) are initialized to `0x010000`.
+
+### Step 4: Memory Testing and Allocation (Cold Start Only)
+On a cold start, the system performs a hardware memory test:
+1. It writes a pattern to RAM and reads it back to detect the available Bank 0 and Bank 1 sizes.
+2. The detected size is written to the **MMU Memory Configuration Register** (`0xFF8001`).
+3. Magic values are written to `0x000420` and `0x00043A` to mark memory as validated.
+
+### Step 5: OS Initialization
+Finally, the system prepares the environment for TOS:
+- Clear the first 64 KB of RAM.
+- Initialize operating system variables.
+- Set up the CPU Interrupt Vector Table.
+- Initialize the BIOS and MFP.
+- Determine the boot device (`_bootdev` at `0x000446`) and attempt to boot from floppy or ACSI.
+
+## 3. CPU, Glue Chip, and ROM Interaction
+
+The boot process relies on a tight loop of communication between the CPU and the custom ASICs.
+
+### Signal Chain for Reset Fetch
+1. **CPU Request**: At power-on, the CPU asserts the address bus for `0x000000` and `0x000004`.
+2. **Glue Chip Decoding**: The Glue chip monitors the address bus. It recognizes these addresses as belonging to the **ROM region**.
+3. **ROM Selection**: The Glue chip asserts the `ROMEN` (ROM Enable) signal, activating the TOS ROM chip.
+4. **Data Return**: The ROM chip places the SSP and PC values on the data bus, which the CPU then loads into its internal registers.
+
+### Address Space Mapping during Boot
+The Glue chip's decode table (implemented in `TGlue::TGlue()`) ensures the CPU reaches the correct components:
+- **`0x000000` - `0x3FFFFF`**: Mapped to ST RAM (but mirrored with ROM at the bottom during boot).
+- **`0xFC0000` - `0xFFFFFF`**: Mapped to ROM and I/O space.
+- **`0xFF8000` - `0xFFFFFF`**: Specifically mapped to I/O device registers (Glue, MFP, PSG, etc.).
+
+## 4. Critical Registers and Memory Addresses
+
+The following table summarizes the most critical addresses involved in the Atari ST boot sequence.
+
+| Address / Register | Name | Purpose | Value/Magic Number |
+| :--- | :--- | :--- | :--- |
+| `0x000000` | Reset Vector 0 | Initial Supervisor Stack Pointer (SSP) | Variable (ROM) |
+| `0x000004` | Reset Vector 1 | Initial Program Counter (PC) | Variable (ROM) |
+| `0x000420` | `memvalid` | Warm start validation flag 1 | `0x7520191F3` |
+| `0x00043A` | `memval2` | Warm start validation flag 2 | `0x237698AA` |
+| `0x000424` | `memctrl` | Memory configuration for warm start | Variable |
+| `0x000426` | `resvalid` | Custom reset vector validation | `0x31415926` |
+| `0x00042A` | `Resvector` | Custom reset jump address | Variable |
+| `0x000446` | `_bootdev` | Boot device selector | < 2 for Floppy |
+| `0x000482` | `_cmdload` | Shell loading flag | `0x0000` to skip |
+| `0xFF8001` | MMU Config | MMU Memory Configuration Register | Variable |
+| `0xFF8201` | Shifter Base L | Shifter display memory base (Low) | `0x010000` |
+| `0xFF8203` | Shifter Base H | Shifter display memory base (High) | `0x010000` |
+| `0xFF820A` | `syncmode` | Video sync frequency (PAL/NTSC) | 50Hz / 60Hz |

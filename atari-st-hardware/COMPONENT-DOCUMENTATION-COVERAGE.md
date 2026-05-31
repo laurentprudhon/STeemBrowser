@@ -210,7 +210,70 @@ DRAM chips (41256, 414616), DRAM refresh counter (74LS163), RAM expansion hacks,
 
 ### Tier 3 — Nice to Have
 | Component | Reason |
-|-----------|--------|
+|-----|------|
 | **TOS ROM cartridge variants** | Software compatibility notes |
 | **TOS version differences by model** | Hardware feature detection routines |
 | **Voltage regulation details** | Power analysis / restoration reference |
+
+---
+
+## Atari ST Software Wiki Coverage (`atari-st-software/`)
+
+Generated: 2026-05-03
+
+### Directory Structure
+
+```
+atari-st-software/
+├── rom-system/
+│   ├── 01-rom-and-bios-architecture.md      TOS version history, ROM map, BIOS/XBIOS tables
+│   └── 02-apis-bios-gemdos-xbios.md         GEMDOS, AES, VDI, GDOS, cookies, system vars
+├── boot-os/
+│   ├── 01-boot-process.md                   Boot sequence (ROM, GEMDOS, DESKTOP.PRG)
+│   ├── 02-memory-virtual-memory.md          Memory map, GEMDOS malloc/Mxalloc, MMU/PMMU
+│   ├── 03-interrupt-vbi-rti.md              VBI, IRQ, trap vectors, ISR design
+│   ├── 04-assembly-programming-conventions.md  68000 asm, blitter, stack, conventions
+│   └── 05-multitasking-scheduling.md       MultiTOS PDB, priority, scheduling, FreeMiNT
+├── file-formats/
+│   └── 01-boot-sector-and-file-formats.md   MZ header, FAT12, .ST/.MSA/.DIM/.STX
+└── games-demos/
+    ├── 01-game-programming.md               Dev tools, Shifter direct access, YM2149
+    ├── 02-demo-effects.md                   Demoscene, race-the-beam, fullscreen hacks
+    ├── 03-networking-protocols.md           MIDI network, PPP, STinG, Ethernet
+    └── 04-vdi-graphics-api-reference.md     VDI functions, workstations, drawing primitives
+```
+
+### Coverage Summary
+
+| Category | Files | Coverage |
+|----------|-------|------|
+| ROM/BIOS Architecture | 2 files | **COMPLETE** — Version history, all 261 XBIOS functions, BIOS table |
+| APIs (GEMDOS/AES/VDI/GDOS) | 1 file | **COMPLETE** — Complete GEMDOS function table, AES/WIMP, cookie jar |
+| Boot Process | 1 file | **COMPLETE** — Cold/warm reset, FDC bootstrap, GEMDOS, DESKTOP.PRG |
+| Memory Management | 1 file | **COMPLETE** — Memory maps for all models, MMU/PMMU, GEMDOS memory API |
+| Interrupt Handling | 1 file | **COMPLETE** — MFP timers, IKBD, VBI/RTI, ISR templates, trap vectors |
+| Assembly Conventions | 1 file | **COMPLETE** — 68000 instructions, blitter, stack frames, XBIOS call modes |
+| Multitasking | 1 file | **COMPLETE** — MultiTOS PDB, priority scheduling, FreeMiNT vs stock |
+| File Formats | 1 file | **COMPLETE** — MZ header, FAT12 cluster chains, disk image formats |
+| Game Programming | 1 file | **COMPLETE** — Dev tools, Shifter DMA, YM2149 frequency, trackers |
+| Demo Effects | 1 file | **COMPLETE** — Demoscene history, race-the-beam, raster bars, blitter sprites |
+| Networking | 1 file | **COMPLETE** — MIDI, PSS, RPC, PPP, EtherNEC, STinG, BBS |
+| VDI Graphics API | 1 file | **COMPLETE** — 100+ VDI functions, workstations, coordinate mapping |
+
+**Total Software Wiki Files: 12 | Total: COMPLETE**
+
+### Cross-Reference with Hardware Documentation
+
+| Software Concept | Hardware Reference | Link |
+|-----------------|-------------------|------|
+| Shifter framebuffer | GST Shifter | `atari-st-hardware/components/video/01-gtia-shifter.md` |
+| YM2149 sound | PSG Sound | `atari-st-hardware/components/sound/01-ym2149.md` |
+| FDC boot loading | WD1772 FDC | `atari-st-hardware/components/fdc/01-wd1772.md` |
+| Blitter DMA | Blitter Integration | `atari-st-hardware/components/blitter/01-blitter.md` |
+| I/O ports | I/O Pinouts | `atari-st-hardware/pins/03-db25-rs232-port.md` |
+| MFP/MC68901 | MC689000 | `atari-st-hardware/components/mfp/01-mc68901.md` |
+| IKBD keyboard | Mouse/Joy port | `atari-st-hardware/pins/06-db9-mouse-joystick-port.md` |
+| MIDI Port | MIDI | `atari-st-hardware/pins/07-midi-port.md` |
+| Memory controller | DRAM controller | `atari-st-hardware/memory/01-memory-map.md` |
+| GST Shifter | GST Shifter | `atari-st-hardware/ste-enhancements/02-super-hires.md` |
+| Blitter commands | Blitter integration | `atari-st-hardware/components/blitter/02-blitter-gst-integration.md` |
