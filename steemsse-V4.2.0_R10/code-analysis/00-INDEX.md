@@ -18,6 +18,7 @@
 - [20-MC68000-CPU.md](./20-MC68000-CPU.md) - Motorola MC68000 CPU emulation
 - [20-MC68000-CPU-DETAILED.md](./20-MC68000-CPU-DETAILED.md) - Detailed MC68000 inner workings and instruction families
 - [21-MC68901-MFP.md](./21-MC68901-MFP.md) - Multi-Function Peripheral implementation
+- [21-MFP-INTERRUPT-HANDLING.md](./21-MFP-INTERRUPT-HANDLING.md) - MFP interrupt handling system
 - [22-YM2149-PSG.md](./22-YM2149-PSG.md) - Yamaha YM2149 PSG sound chip
 - [23-WD1772-FDC.md](./23-WD1772-FDC.md) - Western Digital WD1772 floppy disk controller
 - [24-MC6850-ACIA.md](./24-MC6850-ACIA.md) - Asynchronous Communications Interface Adapter

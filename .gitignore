@@ -55,3 +55,15 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+## CMake / Test build artifacts
+tests/build/
+*.o
+*.a
+*.so
+*.so.*
+*.dylib
+*.exe
+
+## Kilo agent manager state
+.kilo/agent-manager.json
