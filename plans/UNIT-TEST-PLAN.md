@@ -1,8 +1,8 @@
-# Steem SSE V4.2.0_R10 - Comprehensive Unit Test Suite Plan
+ok# Steem SSE V4.2.0_R10 - Comprehensive Unit Test Suite Plan
 
 ## Executive Summary
 
-This plan outlines a strategy for building a comprehensive unit test suite for the Steem SSE Atari ST emulator codebase (~130K lines of C++). The emulator follows a component-based architecture where each hardware chip is a separate class, but lacks any existing test infrastructure.
+This plan outlines a strategy for building a comprehensive unit test suite for the STeem SSE Atari ST emulator codebase (~130K lines of C++). **The emulator code is NEVER modified.** Tests compile the entire emulator as a single static library and link per-component test executables against it.
 
 ### Project Profile
 | Aspect | Detail |
@@ -18,44 +18,52 @@ This plan outlines a strategy for building a comprehensive unit test suite for t
 
 ---
 
-## 1. Testing Strategy Overview
+## 1. Core Strategy: Full Linkage, Modular Tests
 
-### 1.1 Why Google Test (GTest)
+### 1.1 Fundamental Decision
 
-**Decision**: Use **Google Test** with **CMake** as the build system for tests.
-
-| Framework | Pros | Cons | Decision |
-|-----------|------|------|----------|
-| Google Test | CMake-native, excellent mocking, fixture support, widely available, rich assertions | Larger footprint | **WINNER** |
-| Catch2 | Header-only, lightweight | No built-in mocking, less CMake integration | Considered |
-| doctest | Ultra-light, header-only | Minimal mocking, less mature | Considered |
-
-### 1.2 Three-Tier Testing Approach
+**We do NOT compile individual emulator components in isolation.** Instead:
 
 ```
-Tier 1 - PURE UNIT TESTS (no emulator state, fast)
-  └── Utility classes, parser logic, math functions, CPU instruction decoding
-
-Tier 2 - MOCKED COMPONENT TESTS (component in isolation with mocked globals)
-  └── Hardware chip emulation classes (MMU, DMA, PSG, Glue, Shifter, etc.)
-
-Tier 3 - SUBSYSTEM INTEGRATION TESTS (multiple components, minimal env)
-  └── Disk I/O pipeline, CPU+memory interactions, sound pipeline, boot sequence
+┌──────────────────────────────┐
+│     steem_test_core.a        │ ← ENTIRE emulator compiled as ONE static library
+│                              │   Same source files, same flags as production build
+│  cpu.cpp  mmu.cpp  glue.cpp  │   Only excludes: main.cpp, X11 platform code,
+│  fdc.cpp  psg.cpp  dma.cpp   │   audio backends
+│  ... all ~70 testable .cpps  │
+└──────────────┬───────────────┘
+               │ single library, ALL symbols resolved internally
+         ┌─────▼──────┐ ┌─────▼──────┐ ┌─────▼──────┐
+         │ cpu_tests  │ │ fdc_tests   │ │ glue_tests │ ← Per-component test executables
+         │            │ │             │ │             │
+         │ [GTest]    │ │ [GTest]     │ │ [GTest]     │
+         └────────────┘ └─────────────┘ └─────────────┘
 ```
 
-### 1.3 Core Challenge: Global State
+### 1.2 Why This Approach
 
-The codebase uses extensive global state:
-- ~20+ global chip instances declared in `computer.h`
-- Global cycle counter `COUNTER_VAR`
-- Global configuration state
-- Platform-specific code paths (`WIN32` vs `UNIX`)
+| Issue with Isolation | How Full Linkage Solves It |
+|---------------------|---------------------------|
+| `pch.h` includes X11, audio, joystick headers that break compilation on minimal systems | No problem — we compile the full emulator which already handles these via Makefile.txt |
+| Cross-component global references (`Blitter`, `Mfp`, etc.) are impossible to isolate without editing source | All globals link naturally because everything is in one library |
+| Function pointer dispatch tables (`m68k_call_table`) span cpu.cpp, cpu_op.cpp, cpu_ea.cpp — must compile together | They compile together by design |
+| CPU's `#include <computer.h>` declares externs for every chip — impossible to mock all of them | No mocking needed — the real chip globals resolve from the same library |
+| Refactoring source code to expose APIs would violate the "never touch production" rule | Not needed — we test through the existing global/public API |
 
-**Solution**: Create a **Test Framework Layer** that:
-1. Provides mock versions of all global state
-2. Interposes platform-specific code with no-ops
-3. Captures and resets component state for each test
-4. Supports deterministic replay of emulator cycles
+### 1.3 What Gets Mocked
+
+Since the emulator is linked as a whole, ONLY these need stubbing:
+
+| Category | What | Why |
+|----------|------|-----|
+| **Platform X11 display** | `Display*`, X resource DB, window creation | Tests run headless |
+| **Audio backends** | PulseAudio, PortAudio, RtAudio init/close | Tests don't produce sound |
+| **File I/O for runtime** | Live disk images, ROM loading paths | Tests use synthetic data or embedded test fixtures |
+| **main() entry point** | The `main.cpp` itself | Tests initialize state themselves via fixture setup |
+
+### 1.4 Google Test with CMake
+
+**Decision**: Use **Google Test** fetched via `FetchContent`. Same rationale as before: CMake-native, excellent fixture support, widely understood assertions.
 
 ---
 
@@ -64,423 +72,455 @@ The codebase uses extensive global state:
 ### 2.1 Directory Structure
 
 ```
-steemsse-V4.2.0_R10/tests/
-├── CMakeLists.txt              # Root CMake config for tests
-├── README.md                   # How to build and run
+tests/
+├── CMakeLists.txt                    # Root CMake: GTest fetch, steem_test_core lib build
 ├── cmake/
-│   ├── FindGTest.cmake         # GTest download/fetch config
-│   └── test_flags.cmake        # Common compiler flags
+│   └── test_flags.cmake              # Mirror production Makefile.txt flags exactly
 ├── framework/
-│   ├── test_helpers.h          # Common test utilities and macros
-│   ├── test_helpers.cpp        # Shared test helpers
-│   ├── emulator_mock.h         # Mock global state
-│   ├── emulator_mock.cpp       # Mock implementations
-│   ├── memory_mock.h           # Mock memory for CPU tests
-│   └── event_mock.h            # Mock agenda/event system
-├── tier1_unit/                 # Pure unit tests (no dependencies)
+│   ├── test_helpers.h                # Common helpers: EXPECT_REGISTER, ASSERT_CYCLES, etc.
+│   ├── test_helpers.cpp
+│   ├── platform_stub.h               # DECLARATIONS of stubbed X11/audio functions
+│   ├── platform_stub.cpp             # Stub implementations (link after steem_test_core)
+│   ├── memory_helpers.h              # Helpers to read/patch emulator RAM from tests
+│   └── test_fixture.h                # TestEmulatorEnvironment base fixture class
+├── cpu/                              # CPU component tests
 │   ├── CMakeLists.txt
-│   ├── cpu/
-│   ├── mmu/
-│   ├── shifter/
-│   ├── psg/
-│   ├── disk/
-│   ├── utility/
-│   └── acc/
-├── tier2_component/            # Mocked component tests
+│   ├── test_cpuinit.cpp
+│   ├── test_cpu_ea.cpp
+│   ├── test_cpu_data_move.cpp
+│   ├── test_cpu_alu.cpp
+│   ├── test_cpu_bitops.cpp
+│   ├── test_cpu_control.cpp
+│   ├── test_cpu_multiply.cpp
+│   ├── test_cpu_ccr.cpp
+│   ├── test_cpu_shift.cpp
+│   └── test_cpu_core.cpp
+├── disk/                             # Disk format/component tests
 │   ├── CMakeLists.txt
-│   ├── glue/
-│   ├── mfp/
-│   ├── dma/
-│   ├── fdc/
-│   ├── floppy/
-│   ├── blitter/
-│   ├── ikbd/
-│   ├── rs232/
-│   └── acsi/
-├── tier3_integration/          # Subsystem integration tests
+│   ├── test_disk_stw.cpp
+│   ├── test_disk_scp.cpp
+│   ├── test_disk_hfe.cpp
+│   ├── test_disk_ghost.cpp
+│   └── test_archive.cpp
+├── chip/                             # Hardware chip component tests
 │   ├── CMakeLists.txt
-│   ├── boot/
-│   ├── cpu_memory/
-│   ├── disk_io/
-│   ├── sound/
-│   └── video/
-└── resources/                  # Test fixtures and test data
-    ├── disk_images/            # Minimal disk image test data
-    ├── roms/                   # Minimal TOS ROM for boot tests
-    ├── save_states/            # Known-good save states
-    └── expected_outputs/       # Expected output for comparison
+│   ├── test_mmu_ior.cpp
+│   ├── test_mmu_iow.cpp
+│   ├── test_glue.cpp
+│   ├── test_mfp.cpp
+│   ├── test_dma.cpp
+│   ├── test_shifter.cpp
+│   ├── test_psg.cpp
+│   ├── test_fdc.cpp
+│   ├── test_floppy_drive.cpp
+│   ├── test_floppy_disk.cpp
+│   ├── test_blitter.cpp
+│   ├── test_ikbd.cpp
+│   ├── test_acia.cpp
+│   ├── test_rs232.cpp
+│   └── test_acsi.cpp
+├── utility/                          # Utility component tests
+│   ├── CMakeLists.txt
+│   ├── test_acc.cpp
+│   ├── test_palette.cpp
+│   ├── test_macros.cpp
+│   ├── test_historylist.cpp
+│   ├── test_dataloadsave.cpp
+│   └── test_infrastructure_smoke.cpp  # Phase 0 build smoke test
+├── integration/                      # Cross-component integration tests
+│   ├── CMakeLists.txt
+│   ├── test_boot.cpp
+│   ├── test_cpu_memory_bus.cpp
+│   ├── test_disk_io_flow.cpp
+│   ├── test_sound_pipeline.cpp
+│   ├── test_video_scanline.cpp
+│   ├── test_interrupt_chain.cpp
+│   └── test_save_state_roundtrip.cpp
+└── resources/                        # Test data
+    ├── disk_images/                  # Minimal generated test images per format
+    ├── roms/                         # Synthetic TOS ROM for boot tests
+    └── binary_fixtures/              # Known-good input/output binary blobs
 ```
 
-### 2.2 CMake Architecture
+### 2.2 CMake Architecture — Three-Layer Library Build
 
-**Root CMakeLists.txt** will:
-1. Fetch GTest via `FetchContent`
-2. Compile a stripped-down version of the Steem source with `TEST_BUILD` defined
-3. Link individual test executables against the Steem library + GTest
-4. Register all tests with `ctest`
-
-**Key compile definitions for test builds:**
-```cmake
-add_definitions(-DTEST_BUILD -DUNIX -DLINUX -DSSE_DRAW_C -DSSE_RELEASE)
-add_definitions(-DSSE_NO_OSD -DNO_PORTAUDIO -DNO_RTAUDIO -DSSE_NO_SCREENSAVER)
-```
-
-### 2.3 Source Compilation Strategy
-
-**Problem**: The Makefile compiles each file individually. We need a **library target**.
-
-**Solution**: Create a thin `steem_test_lib` that:
-1. Includes all source files that don't depend on platform code (display, sound backend, etc.)
-2. Uses stub implementations for X11, audio, and windowing code
-3. Exposes all necessary symbols for testing
+#### Layer 1: `steem_test_core` (ONE static library, ENTIRE emulator)
 
 ```cmake
-# Library of testable source (no main.cpp, no platform-specific GUI)
-add_library(steem_test_lib OBJECT
-    steem/cpu.cpp steem/cpu_ea.cpp steem/cpu_op.cpp steem/cpuinit.cpp
-    steem/mmu.cpp steem/ior.cpp steem/iow.cpp
-    steem/glue.cpp steem/shifter.cpp steem/dma.cpp
-    steem/psg.cpp steem/mfp.cpp steem/fdc.cpp
-    steem/floppy_disk.cpp steem/floppy_drive.cpp
-    steem/blitter.cpp steem/ikbd.cpp steem/rs232.cpp
-    steem/acsi.cpp steem/emulator.cpp steem/reset.cpp
-    steem/loadsave.cpp steem/tos.cpp steem/acc.cpp
-    steem/archive.cpp steem/dataloadsave.cpp
-    steem/disk_stw.cpp steem/disk_scp.cpp steem/disk_hfe.cpp
-    steem/disk_ghost.cpp
-    steem/macros.cpp steem/historylist.cpp
-    steem/options.cpp steem/options_create.cpp
-    steem/sound.cpp steem/computer.cpp
-    steem/draw.cpp steem/palette.cpp
-    steem/hd_gemdos.cpp steem/harddiskman.cpp
-    steem/key_table.cpp steem/run.cpp
-    steem/d2.cpp steem/debug.cpp
-    # ... more files as needed
+# Compiled with EXACTLY the same flags as Makefile.txt
+add_library(steem_test_core STATIC
+    # --- CPU ---
+    ${SEEM}/steem/cpu.cpp
+    ${SEEM}/steem/cpu_ea.cpp
+    ${SEEM}/steem/cpu_op.cpp
+    ${SEEM}/steem/cpuinit.cpp
+    # --- chips ---
+    ${SEEM}/steem/mmu.cpp
+    ${SEEM}/steem/ior.cpp
+    ${SEEM}/steem/iow.cpp
+    ${SEEM}/steem/glue.cpp
+    ${SEEM}/steem/shifter.cpp
+    ${SEEM}/steem/dma.cpp
+    ${SEEM}/steem/blitter.cpp
+    ${SEEM}/steem/mfp.cpp
+    ${SEEM}/steem/psg.cpp
+    # --- disk ---
+    ${SEEM}/steem/fdc.cpp
+    ${SEEM}/steem/floppy_drive.cpp
+    ${SEEM}/steem/floppy_disk.cpp
+    ${SEEM}/steem/disk_stw.cpp
+    ${SEEM}/steem/disk_scp.cpp
+    ${SEEM}/steem/disk_hfe.cpp
+    ${SEEM}/steem/disk_ghost.cpp
+    ${SEEM}/steem/archive.cpp
+    ${SEEM}/steem/hd_gemdos.cpp
+    ${SEEM}/steem/harddiskman.cpp
+    # --- I/O ---
+    ${SEEM}/steem/ikbd.cpp
+    ${SEEM}/steem/acia.cpp
+    ${SEEM}/steem/rs232.cpp
+    ${SEEM}/steem/acsi.cpp
+    # --- core ---
+    ${SEEM}/steem/emulator.cpp
+    ${SEEM}/steem/reset.cpp
+    ${SEEM}/steem/run.cpp
+    ${SEEM}/steem/computer.cpp
+    ${SEEM}/steem/tos.cpp
+    ${SEEM}/steem/loadsave.cpp
+    ${SEEM}/steem/loadsave_emu.cpp
+    # --- utility ---
+    ${SEEM}/steem/acc.cpp
+    ${SEEM}/steem/macros.cpp
+    ${SEEM}/steem/historylist.cpp
+    ${SEEM}/steem/dataloadsave.cpp
+    ${SEEM}/steem/palette.cpp
+    ${SEEM}/steem/draw.cpp         # draw.cpp resolves function pointers, no X11
+    ${SEEM}/steem/sound.cpp
+    ${SEEM}/steem/stports.cpp
+    ${SEEM}/steem/midi.cpp
+    # --- extras needed for full linkage ---
+    ${SEEM}/steem/options.cpp
+    ${SEEM}/steem/debug.cpp
+    ${SEEM}/steem/d2.cpp
+    ${SEEM}/steem/iolist.cpp
+    ${SEEM}/steem/key_table.cpp
+    ${SEEM}/steem/wordwrapper.cpp
+    # --- code/ subdirs ---
+    ${SEEM}/steem/code/draw_c/draw_c.cpp
 )
+
+target_include_directories(steem_test_core PRIVATE
+    ${SEEM}/include              # binary.h, clarity.h, data_union.h
+    ${SEEM}/steem/headers        # pch.h, cpu.h, emulator.h, etc.
+    ${SEEM}/3rdparty             # zlib, rtaudio, 6301 headers
+    ${SEEM}/3rdparty/zlib
+    ${SEEM}/3rdparty/zlib/contrib/minizip
+    ${SEEM}/3rdparty/rtaudio
+    ${SEEM}/3rdparty/6301
+    ${SEEM}/3rdparty/dsp
+    ${SEEM}/3rdparty/dsp/FIR-filter-class
+    ${SEEM}/steem/code           # debug.h, computer.h, gui.h, osd.h
+    ${SEEM}/steem/code/x         # display.h (UNIX-specific declarations)
+)
+
+# EXACT mirror of Makefile.txt CFLAGS + STEEMFLAGS
+target_compile_options(steem_test_core PRIVATE
+    -w -Wfatal-errors -fpermissive
+    -O -O2 -std=gnu++11
+)
+
+target_compile_definitions(steem_test_core PRIVATE
+    UNIX LINUX SSE_DRAW_C SSE_RELEASE NO_DEBUG_BUILD NDEBUG
+    SSE_NO_OSD        # disable On-Screen Display
+    NO_PORTAUDIO      # no PortAudio init
+    NO_RTAUDIO        # no RtAudio init
+    TEST_BUILD        # tells some code paths to skip platform init
+)
+
+target_link_libraries(steem_test_core PUBLIC
+    pthread           # Makefile.txt links -lpthread
+)
+```
+
+#### Layer 2: Platform stubs (ONE static library, thin shim)
+
+```cmake
+add_library(platform_stub STATIC
+    framework/platform_stub.cpp
+)
+target_compile_definitions(platform_stub PRIVATE UNIX LINUX TEST_BUILD)
+```
+
+This provides exactly the functions/classes that `steem_test_core` calls which require X11/audio:
+- X11 display/window creation → no-op
+- Audio backend init/close → no-op
+- Any filesystem paths → redirect to test resources/ directory
+
+#### Layer 3: Per-component test executables
+
+Each test directory has its own CMakeLists that creates a test executable:
+
+```cmake
+# cpu/CMakeLists.txt example
+add_executable(cpu_unit_tests
+    test_cpuinit.cpp
+    test_cpu_ea.cpp
+    test_cpu_data_move.cpp
+    # ... more test files
+)
+target_link_libraries(cpu_unit_tests
+    PRIVATE GTest::gtest_main steem_test_core platform_stub
+)
+gtest_discover_tests(cpu_unit_tests)
+```
+
+### 2.3 Build Order and Symbol Resolution
+
+```
+Link order for each test executable:
+  1. GTest::gtest_main          ← test framework
+  2. [component_test_lib]        ← test code for this component
+  3. steem_test_core             ← full emulator (ALL symbols defined)
+  4. platform_stub               ← overrides platform-only symbols
+
+steem_test_core already resolves ALL internal cross-references:
+  cpu.cpp → Mfp.*, Glue.*, Blitter.*  → resolved within same library
+  cpu_ea.cpp → io_read(), io_write()   → resolved within same library (via ior.cpp, iow.cpp)
+  fdc.cpp → FloppyDrive.*              → resolved via floppy_drive.cpp in same library
+  ALL globals defined in their real .cpp files
 ```
 
 ---
 
-## 3. Testable Source File Inventory
+## 3. Test Categories and What They Test
 
-### 3.1 Tier 1 - Pure Unit Tests (No Global State)
+### 3.1 CPU Tests
 
-These files contain logic that can be tested in isolation with minimal setup:
+Tests the MC68000 emulation. The CPU is stateless per test: fixture initializes register state, writes known instruction bytes to mock memory region in RAM, calls `m68kProcess()`, then asserts on resulting register/memory state.
 
-#### CPU (High Priority - Core Emulation Logic)
-| File | Lines | Testable Functions |
-|------|-------|-------------------|
-| `cpu_op.cpp` | 8,755 | All 210 MC68000 instruction implementations |
-| `cpu_ea.cpp` | 1,916 | Effective address calculation (all 18 addressing modes) |
-| `cpu.cpp` | 1,970 | `TMC68000::RunCycles()`, interrupt handling, exception vectors |
-| `cpuinit.cpp` | ~200 | Register initialization, lookup tables |
+Each test follows this pattern:
+```cpp
+TEST_F(CpuTestFixture, MoveD0ToD1) {
+    setup_register(0, 0xDEADBEEF);    // D0 = 0xDEADBEEF
+    write_instruction_at(pc, 0x4860); // MOVE.L D0,D1
+    cpu_execute();                    // calls m68kProcess()
+    EXPECT_REGISTER_EQ(1, 0xDEADBEEF); // D1 now equals old D0
+}
+```
 
-#### Math/Algorithm
-| File | Lines | Testable Functions |
-|------|-------|-------------------|
-| `acc.cpp` | ~400 | Hex conversion, byte search patterns, ASCII utilities |
-| `macros.cpp` | ~800 | Macro playback/recording logic |
-| `palette.cpp` | ~300 | Color palette generation, STE palette math |
+### 3.2 Disk Format Tests
 
-#### Disk Image Formats (Pure Parsing)
-| File | Lines | Testable Functions |
-|------|-------|-------------------|
-| `disk_stw.cpp` | 1,820 | STW v1/v2 format parsing, MFM track data |
-| `disk_scp.cpp` | ~600 | SCP format parsing, SuperCard Pro images |
-| `disk_hfe.cpp` | ~500 | HFE format parsing, HxC floppy emulator |
-| `disk_ghost.cpp` | ~400 | Ghost disk (hi-score) format |
-| `archive.cpp` | ~800 | Archive/zip extraction logic |
+Pure parsing tests — given a binary blob of known format, verify the parser produces the expected internal representation. No emulator state needed; these can often call static/public functions directly.
 
-#### Utility Classes
-| File | Lines | Testable Functions |
-|------|-------|-------------------|
-| `historylist.cpp` | ~300 | LRU list operations |
-| `dataloadsave.cpp` | 2,484 | Data persistence serialization |
+### 3.3 Hardware Chip Tests
 
-#### TOS/Cartridge
-| File | Lines | Testable Functions |
-|------|-------|-------------------|
-| `tos.cpp` | 1,121 | Cartridge hooks, TOS interception logic |
+Each chip has real global instances in `steem_test_core`. The fixture resets the chip's state between tests by writing known values to its registers via MMIO (which is real code, not stubbed). Tests then assert on register reads or observable effects.
 
-### 3.2 Tier 2 - Mocked Component Tests (Hardware Chips)
+### 3.4 Utility Tests
 
-These require mocking global state but test individual chip behavior:
+Test standalone helper functions: hex/binary conversions, palette generation, history list operations, macro record/playback logic.
 
-| File | Lines | Primary Class | Mock Dependencies |
-|------|-------|--------------|-------------------|
-| `glue.cpp` | 2,217 | `TGlue` | MFP, DMA, cycle counter |
-| `mfp.cpp` | ~1,800 | `TMC68901` | Glue chip, interrupt lines |
-| `dma.cpp` | ~900 | `TDma` | Mmu, Shifter, Psg |
-| `mmu.cpp` | ~1,500 | `TMmu` | Glue chip, bus signals |
-| `shifter.cpp` | ~2,000 | `TShifter` | Dma, DMA buffers |
-| `psg.cpp` | 1,122 | `TYM2149` | Sound buffers, DSP |
-| `fdc.cpp` | 4,097 | `TWD1772` | FloppyDrive, FloppyDisk |
-| `floppy_drive.cpp` | 1,266 | `TSF314` | FloppyDisk, FDC |
-| `floppy_disk.cpp` | ~3,000 | `TFloppyDisk` | Disk I/O, image loaders |
-| `blitter.cpp` | ~2,000 | `TBlitter` | Mmu, Glue, DMA |
-| `ikbd.cpp` | 1,695 | `TMC6850` (IKBD) | Keyboard/mouse input |
-| `rs232.cpp` | ~800 | RS232 serial | ACIA, buffers |
-| `acsi.cpp` | ~1,200 | `TAcsiHdc` | Harddiskman, I/O |
-| `acia.cpp` | ~600 | `TMC6850` | Serial buffers |
+### 3.5 Integration Tests
 
-### 3.3 Tier 3 - Subsystem Integration Tests
-
-| Subsystem | Files Involved | Test Scenario |
-|-----------|---------------|---------------|
-| Boot | `reset.cpp`, `computer.cpp`, `tos.cpp`, `emulator.cpp` | Power-on reset sequence |
-| CPU+Memory | `cpu.cpp`, `mmu.cpp`, `ior.cpp`, `iow.cpp` | Full instruction cycle with memory access |
-| Disk I/O | `fdc.cpp`, `floppy_drive.cpp`, `floppy_disk.cpp`, `disk_stw.cpp` | Read/write floppy sector |
-| Video Pipeline | `glue.cpp`, `shifter.cpp`, `dma.cpp` | Scanline generation |
-| Sound Pipeline | `psg.cpp`, `sound.cpp`, `dma.cpp` | Sound generation and buffer fill |
-| Interrupt System | `mfp.cpp`, `glue.cpp`, `run.cpp` | VBL/HBL interrupt delivery |
-| Save State | `loadsave.cpp`, `loadsave_emu.cpp` | Full state save/restore roundtrip |
-
-### 3.4 Non-Testable (Excluded from Unit Tests)
-
-These files are platform-specific or GUI-dependent and are best tested manually:
-
-| Category | Files | Reason |
-|----------|-------|--------|
-| X11 Display | `display.cpp` (lines using X11) | Platform-specific display |
-| Audio Backend | `interface_pulse.cpp`, `interface_pa.cpp`, `interface_rta.cpp` | Audio API dependent |
-| GUI | `gui.cpp`, `gui_controls.cpp`, `stemwin.cpp`, `options.cpp`, `options_create.cpp` | X11/Windows dependent |
-| HXC Dialogs | `hxc_*.cpp`, `dwin_edit.cpp`, `infobox.cpp`, `patchesbox.cpp`, `shortcutbox.cpp` | X11 widgets |
-| Main | `main.cpp` | Entry point, init/shutdown |
-| Resource | `rc/resource.cpp` | Resource embedding |
-| Platform Misc | `osd.cpp`, `stemdialogs.cpp` | Platform-specific |
-| Draw (assembly) | `steem/asm/*.asm` | Assembly draw routines |
-| 3rd Party | `3rdparty/*` | External libraries |
-| Libretro | `libretro/libretro-core.cpp` | Separate build target |
+Run the emulator through multi-component scenarios: boot sequence (power-on → reset vector fetch → TOS execution), full disk read (FDC command → drive seek → sector data returned), or save/restore roundtrip (save state → modify → restore → verify).
 
 ---
 
 ## 4. Test Framework Design
 
-### 4.1 Test Helper Architecture
+### 4.1 The `TestEmulatorEnvironment` Fixture
 
+Base class for tests that need emulator state:
+
+```cpp
+class TestEmulatorEnvironment : public ::testing::Test {
+protected:
+    void SetUp() override {
+        // Call real init functions from steem_test_core
+        InitMemory();             // allocates RAM, maps ROM region
+        computer_reset_all(true); // Cold reset: initializes all chip globals
+        SetTimingFunctions();     // Sets pBus* function pointers (from cpu.cpp)
+
+        // Set up known-good memory fixture
+        write_test_rom();         // Synthetic minimal TOS vectors
+        zero_ram();
+    }
+
+    void TearDown() override {
+        // Free dynamic allocations made by real InitMemory()
+    }
+
+    // --- CPU helpers ---
+    void set_register(int n, uint32_t val);
+    uint32_t reg(int n) const;
+    uint16_t sr() const;
+    void execute_one();                  // calls m68kProcess()
+    void execute_n(uint32_t cycles);     // spins m68kProcess until cycle budget exhausted
+
+    // --- Memory helpers ---
+    void write_byte(uint32_t addr, uint8_t val);
+    uint8_t read_byte(uint32_t addr) const;
+    void write_instruction_at(uint32_t addr, uint16_t opcode);
+
+    // --- Chip I/O helpers ---
+    void chip_register_write(uint32_t addr, uint16_t val);  // real iow path
+    uint16_t chip_register_read(uint32_t addr) const;       // real ior path
+};
 ```
-┌─────────────────────────────────────────────┐
-│              Individual Test Cases           │
-├─────────────────────────────────────────────┤
-│         Google Test (TestCase/Fixture)       │
-├─────────────────────────────────────────────┤
-│     Test Helpers:                            │
-│     • ResetEmulator()                        │
-│     • MockCounterVar(value)                  │
-│     • InjectCycleDelta(delta)                │
-│     • CaptureMemoryRange(addr, len)          │
-│     • ExpectRegisterWrite(addr, value)       │
-│     • ExpectRegisterRead(addr) -> value      │
-│     • RunNCycles(n)                          │
-│     • AssertRegisterState(expected)          │
-│     • SnapshotState() / RestoreSnapshot()    │
-├─────────────────────────────────────────────┤
-│     Mock Layer:                              │
-│     • EmulatorMock (global state mocks)      │
-│     • MemoryMock (RAM + ROM + MMIO)          │
-│     • AgendaMock (event scheduling)          │
-│     • InterruptMock (interrupt lines)        │
-├─────────────────────────────────────────────┤
-│    Steem Test Library (compiled sources)     │
-└─────────────────────────────────────────────┘
-```
 
-### 4.2 The Test Framework Will Provide
+### 4.2 What's Available to Tests
 
-1. **`TestEmulatorEnvironment`** - A fixture that:
-   - Initializes minimal memory (ROM area + RAM + I/O region)
-   - Resets all chip state
-   - Sets up mock event agenda
-   - Provides helpers for reading/writing registers and memory
-   - Supports state snapshots for diff-based testing
+Since the full emulator is linked, tests can:
+- Access global chip instances directly (`Cpu`, `Mmu`, `Glue`, etc.) — they're extern symbols from the library
+- Call internal functions via forward declarations in test files (e.g., declare `extern void m68kProcess()`)
+- Read/write emulator RAM through real memory accessor functions
+- Observe and assert on timing cycles, register state, interrupt lines
+- Inject data by writing to known addresses before execution
 
-2. **`MockCpuMemory`** - A mock memory region supporting:
-   - Read/write with logging
-   - Expected access pattern verification
-   - I/O address interception
+### 4.3 What's Stubbed in `platform_stub.cpp`
 
-3. **`MockInterrupt`** - Tracks:
-   - Which IRQ lines went high/low
-   - Interrupt delivery timing
-   - Interrupt priority ordering
+Only the symbols that require platform-specific APIs:
 
-4. **`CycleAccumulator`** - Verifies:
-   - Per-instruction cycle counts
-   - Total cycles consumed
-   - Cross-component timing alignment
+| Symbol | Stub Behavior |
+|--------|--------------|
+| X11 display/window functions | Return null-safe values, no-op |
+| PulseAudio/RtAudio init | No-op, return fake handle |
+| Keyboard/mouse event poll | Return empty/stable events |
+| File paths (ROM search) | Redirect to `tests/resources/` |
 
 ---
 
-## 5. Execution Plan - Phase by Phase
+## 5. Execution Plan — Phase by Phase
 
 ### Phase 0: Infrastructure (Week 1)
 
-**Goal**: Build system working, first "hello world" test passes.
+**Goal**: Build the full emulator as a static library, verify first test links and runs.
 
-| Step | File(s) | Description |
-|------|---------|-------------|
-| 0.1 | `tests/CMakeLists.txt` | Root CMake with GTest FetchContent |
-| 0.2 | `tests/cmake/test_flags.cmake` | Compiler flags matching main build |
-| 0.3 | `tests/framework/emulator_mock.h/.cpp` | Mock for global state |
-| 0.4 | `tests/framework/memory_mock.h` | Mock memory region |
-| 0.5 | `tests/framework/event_mock.h` | Mock agenda/event system |
-| 0.6 | `tests/framework/test_helpers.h/.cpp` | Common test utilities |
-| 0.7 | `tests/tier1_unit/CMakeLists.txt` | Tier 1 CMake config |
-| 0.8 | `tests/tier1_unit/utility/test_hello.cpp` | Smoke test to verify build works |
-| 0.9 | Build and run `ctest` | Verify infrastructure |
+| Step | Deliverable |
+|------|-------------|
+| 0.1 | `tests/CMakeLists.txt` with GTest FetchContent + `steem_test_core` target |
+| 0.2 | `cmake/test_flags.cmake` mirroring Makefile.txt flags |
+| 0.3 | `framework/platform_stub.cpp` — minimal stubs for platform calls |
+| 0.4 | `framework/test_fixture.h` + `test_helpers.h/.cpp` |
+| 0.5 | `utility/CMakeLists.txt` with one smoke test |
+| 0.6 | **Build succeeds**, smoke test runs and passes |
 
-### Phase 1: Tier 1 - CPU Core (Weeks 2-3)
+**Deliverable**: Full emulator compiles as `steem_test_core.a`, links against a GTest executable, first test passes.
 
-**Highest priority** - CPU is the heart of the emulator.
+### Phase 1: CPU Core (Weeks 2-6)
 
-| Test File | Source File | Tests | Estimated Count |
-|-----------|------------|-------|-----------------|
-| `cpu/test_cpuinit.cpp` | `cpuinit.cpp` | Register init, lookup tables | ~15 |
-| `cpu/test_cpu_ea.cpp` | `cpu_ea.cpp` | All 18 addressing modes, each with edge cases | ~90 |
-| `cpu/test_cpu_data_move.cpp` | `cpu_op.cpp` | MOVE family (MOVE.B, W, L, MOVEQ, MOVEM) | ~40 |
-| `cpu/test_cpu_alu.cpp` | `cpu_op.cpp` | ADD, SUB, AND, OR, EOR, CMP, ASR, ASL, LSR, LSL, ROT | ~80 |
-| `cpu/test_cpu_bitops.cpp` | `cpu_op.cpp` | BTST, BCHG, BIT, BSET, BCLR | ~30 |
-| `cpu/test_cpu_control.cpp` | `cpu_op.cpp` | BRA, BSR, Jmp, Jsr, RTS, RTE | ~35 |
-| `cpu/test_cpu_multiply.cpp` | `cpu_op.cpp` | MULU, MULS, DIVU, DIVS | ~40 |
-| `cpu/test_cpu_ccr.cpp` | `cpu_op.cpp` | TST, AND, OR, NOT, SBCD, NBCD, TFR, TAS | ~30 |
-| `cpu/test_cpu_shift.cpp` | `cpu_op.cpp` | CHS, NEG, NEGX, EXT, EXTX, ABCD, SBCD | ~25 |
-| `cpu/test_cpu_interrupt.cpp` | `cpu.cpp` | Interrupt entry/exit, reset vector, trap | ~20 |
-| `cpu/test_cpu_exception.cpp` | `cpu.cpp` | Bus error, address error, illegal instruction | ~20 |
-| **Subtotal** | | | **~425 tests** |
+**Highest priority** — 475+ tests across 10 files.
 
-### Phase 2: Tier 1 - Math/Utilities (Week 4)
+See separate PHASE1-WORK-PLAN.md and UNIT-TEST-FILE-BY-FILE.md for detail.
 
-| Test File | Source File | Tests | Estimated Count |
-|-----------|------------|-------|-----------------|
-| `acc/test_acc_conversions.cpp` | `acc.cpp` | Hex/decimal conversion, ASCII utilities | ~25 |
-| `acc/test_acc_patterns.cpp` | `acc.cpp` | Byte search, pattern matching | ~15 |
-| `utility/test_palette.cpp` | `palette.cpp` | Standard/STE palette generation | ~10 |
-| `utility/test_macros.cpp` | `macros.cpp` | Macro record/playback state | ~20 |
-| `utility/test_historylist.cpp` | `historylist.cpp` | LRU list operations | ~15 |
-| `utility/test_dataloadsave.cpp` | `dataloadsave.cpp` | Serialize/deserialize roundtrip | ~25 |
-| `utility/test_tos.cpp` | `tos.cpp` | Cartridge detection, TOS hooks | ~15 |
-| **Subtotal** | | | **~125 tests** |
+### Phase 2: Disk Formats + Utilities (Weeks 7-8)
 
-### Phase 3: Tier 1 - Disk Image Formats (Week 5-6)
+| Component | Tests | Priority |
+|-----------|-------|----------|
+| disk_stw, disk_scp, disk_hfe, disk_ghost, archive | ~135 | P1 |
+| acc, palette, macros, historylist, dataloadsave | ~125 | P1 |
 
-**These are golden test targets** - pure parsing, deterministic I/O.
+### Phase 3: Hardware Chips (Weeks 9-14)
 
-| Test File | Source File | Tests | Estimated Count |
-|-----------|------------|-------|-----------------|
-| `disk/test_disk_stw.cpp` | `disk_stw.cpp` | STW v1/v2 header parse, track read/write, CRC | ~40 |
-| `disk/test_disk_scp.cpp` | `disk_scp.cpp` | SCP header parse, sector read | ~20 |
-| `disk/test_disk_hfe.cpp` | `disk_hfe.cpp` | HFE block parse, track data extraction | ~20 |
-| `disk/test_disk_ghost.cpp` | `disk_ghost.cpp` | Ghost save/load checksums | ~15 |
-| `disk/test_archive.cpp` | `archive.cpp` | ZIP extraction, file enumeration | ~20 |
-| **Subtotal** | | | **~115 tests** |
+| Chip | Tests | Notes |
+|------|-------|-------|
+| MMU + IOR + IOW | ~135 | Memory map routing |
+| Glue | ~45 | VBL/HBL, bus arbitration |
+| MFP | ~50 | Timers, RTC, interrupts |
+| DMA | ~35 | Sound/video transfer |
+| Shifter + Blitter | ~65 | Video pipeline |
+| PSG | ~40 | Audio register programming |
+| FDC + Floppy | ~105 | Disk I/O chain |
+| IKBD + ACIA + RS232 | ~75 | Peripherals |
+| ACSI | ~25 | Hard disk passthrough |
 
-### Phase 4: Tier 2 - Hardware Components (Weeks 7-10)
+### Phase 4: Integration Tests (Weeks 15-16)
 
-Each component gets its own test file with a fixture that mocks dependencies.
-
-| Test File | Source File | Key Tests | Estimated Count |
-|-----------|------------|-----------|-----------------|
-| `mmu/test_mmu.cpp` | `mmu.cpp` | Memory map switching, bank access, ROM/RAM routing, wait states | ~35 |
-| `mmu/test_ior.cpp` | `ior.cpp` | All MMIO read handlers | ~50 |
-| `mmu/test_iow.cpp` | `iow.cpp` | All MMIO write handlers | ~50 |
-| `glue/test_glue.cpp` | `glue.cpp` | VBL/HBL generation, bus arbitration, DE timing, interrupt generation | ~45 |
-| `dma/test_dma.cpp` | `dma.cpp` | Sound DMA transfer, video DMA, channel priority, burst timing | ~35 |
-| `shifter/test_shifter.cpp` | `shifter.cpp` | Palette register programming, resolution mode, STE enhanced colors | ~30 |
-| `psg/test_psg.cpp` | `psg.cpp` | Register writes, audio output, ADSR envelope, I/O mode, fixed vol table | ~40 |
-| `mfp/test_mfp.cpp` | `mfp.cpp` | Timer A/B/C, RTC, prescaler, interrupt masking, register programming | ~50 |
-| `fdc/test_fdc.cpp` | `fdc.cpp` | Command execution, MFM encoding/decoding, CRC, sector read/write | ~45 |
-| `floppy/test_floppy_drive.cpp` | `floppy_drive.cpp` | Head movement, RPM timing, media change detection, write gap | ~30 |
-| `floppy/test_floppy_disk.cpp` | `floppy_disk.cpp` | Image loading, track data extraction, format detection | ~30 |
-| `blitter/test_blitter.cpp` | `blitter.cpp` | Bit-block transfer, pattern modes, line length, wait register | ~35 |
-| `ikbd/test_ikbd.cpp` | `ikbd.cpp` | Keyboard scan, mouse movement, joystick, command buffer | ~30 |
-| `ikbd/test_acia.cpp` | `acia.cpp` | Read/write data, status register, baud rates, FIFO | ~25 |
-| `rs232/test_rs232.cpp` | `rs232.cpp` | Baud rates, transmit/receive, flow control | ~20 |
-| `acsi/test_acsi.cpp` | `acsi.cpp` | Command set, hard disk passthrough, partition handling | ~25 |
-| **Subtotal** | | | **~525 tests** |
-
-### Phase 5: Tier 3 - Integration Tests (Weeks 11-12)
-
-| Test File | Subsystem | Tests | Estimated Count |
-|-----------|-----------|-------|-----------------|
-| `boot/test_boot.cpp` | Power-on + Boot | Reset vector fetch, ROM execution, POST | ~15 |
-| `cpu_memory/test_bus_cycle.cpp` | CPU + MMU | Full instruction with memory access timing | ~25 |
-| `cpu_memory/test_cpu_interrupt_integration.cpp` | CPU + MFP + Glue | Interrupt delivery chain | ~15 |
-| `disk_io/test_fdc_flow.cpp` | FDC + Drive + Disk | Read sector end-to-end | ~20 |
-| `sound/test_psg_dma.cpp` | PSG + DMA | Sound buffer generation | ~15 |
-| `video/test_scanline.cpp` | Glue + DMA + Shifter | Scanline render cycle | ~10 |
-| `video/test_video_modes.cpp` | Shifter + Display | Low/Med/Hires mode switching | ~15 |
-| `interrupt/test_vbl_hbl.cpp` | MFP + Glue + Run | VBL/HBL event delivery | ~10 |
-| `save_state/test_roundtrip.cpp` | Load/Save | Full save/restore, state diff | ~15 |
-| `interrupt/test_run_loop.cpp` | Run events | Agenda scheduling and execution | ~15 |
-| **Subtotal** | | | **~160 tests** |
+Multi-component scenarios that exercise the real execution loop.
 
 ---
 
-## 6. Summary of Scope
+## 6. Total Scope
 
-| Tier | Category | Source Files | Test Files | Est. Tests | Priority |
-|------|----------|-------------|------------|------------|----------|
-| 1 | CPU Core | 4 | 11 | ~425 | **P0** |
-| 1 | Utilities | 6 | 7 | ~125 | **P1** |
-| 1 | Disk Formats | 4 | 5 | ~115 | **P1** |
-| 2 | Hardware Chips | 16 | 16 | ~525 | **P1** |
-| 3 | Integration | 15 | 10 | ~160 | **P2** |
-| **Total** | | **~45 files** | **~49 test files** | **~1,350 tests** | |
+| Phase | Category | Source Files Compiled | Test Files | Est. Tests |
+|-------|----------|---------------------|------------|------------|
+| 0 | Infrastructure | ~70 emulator .cpp → steem_test_core.a | 1 | 1 |
+| 1 | CPU Core | (same lib) | 10 | ~475 |
+| 2 | Disk + Utility | (same lib) | 8 | ~260 |
+| 3 | Hardware Chips | (same lib) | 14 | ~580 |
+| 4 | Integration | (same lib) | 7 | ~160 |
+| **Total** | | **~70 .cpp files once** | **~40 test executables** | **~1,476 tests** |
 
 ---
 
-## 7. Risk Assessment and Mitigations
+## 7. Risk Assessment
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
-| Heavy global state coupling | Tests interfere with each other | Fixture-level state reset; `TestEmulatorEnvironment` |
-| Platform-specific code paths | Tests may not compile on all platforms | `#ifdef UNIX` in test stubs; platform detection in CMake |
-| Long compile times | Slow feedback loop | Object library + per-test incremental builds |
-| Complex chip timing behavior | Tests may be fragile | Document exact timing expectations; use tolerance ranges |
-| Missing test data (ROMs, disk images) | Integration tests blocked | Generate minimal test fixtures programmatically |
-| X11 library dependency | Build failures | Stub all X11 calls; compile only non-X11 sources |
+| Large compile times for steem_test_core | Slow feedback on each test | Object library caching; only recompile changed files |
+| Platform stubs incomplete | Link failures | Build once, resolve all missing symbols up front in Phase 0 |
+| Global state interference between tests | Flaky tests | Fixture-level reset using real `computer_reset_all()` |
+| X11 dev headers not available on CI | Build failure | Install packages: libx11-dev, libxext-dev, libxxf86vm-dev (Phase 0 task) |
+| Memory allocation in emulator init fails under test fixture limits | Crash on SetUp | Allocate realistic memory sizes; don't over-allocate |
+| Audio backend stubs silently fail | Sound tests miss coverage | Stub returns detectable failure codes; assertions verify stub path taken |
 
 ---
 
 ## 8. Build and Run Commands (Target)
 
 ```bash
-# Build all tests
+# Build full emulator test library + all test executables
 cd tests && cmake -S . -B build && cmake --build build
 
-# Run all tests
+# Run ALL tests
 cd tests/build && ctest --output-on-failure
 
-# Run specific test tier
-cd tests/build && ctest -R tier1_cpu --output-on-failure
+# Run CPU tests only
+cd tests/build && ctest -R cpu_ --output-on-failure
 
-# Run with verbose output
-cd tests/build && ctest --verbose -R test_cpu_alu
+# Run a single test with verbose output
+cd tests/build && ./cpu/cpu_unit_tests --gtest_filter="MoveD0ToD1" --gtest_verbose
 
 # Coverage report (optional)
-cd tests/build && gcov -r ../src/*.cpp
+cd tests/build && gcov $(find ../.. -name "*.gcda") # after building with -fprofile-arcs
 ```
 
 ---
 
 ## 9. Code Coverage Goals
 
-| Component | Target Coverage |
-|-----------|----------------|
+| Component | Target |
+|-----------|--------|
 | CPU (cpu_*.cpp) | 90%+ |
-| Disk formats (disk_*.cpp) | 85%+ |
-| Hardware chips (glue, mmu, dma, etc.) | 75%+ |
-| Utilities (acc, macros, pallette) | 80%+ |
-| Integration tests | 50%+ (by necessity) |
+| Disk formats (disk_*.cpp, archive.cpp) | 85%+ |
+| Hardware chips (glue, mmu, dma, fdc, etc.) | 75%+ |
+| Utilities (acc, macros, palette, historylist) | 80%+ |
+| Integration tests | 50%+ |
 | **Overall** | **65%+** |
 
 ---
 
-## 10. First Steps (Immediate Actions)
+## 10. What Changed From Previous Plan
 
-1. Create the `tests/` directory structure
-2. Write root `CMakeLists.txt` with GTest FetchContent
-3. Create `emulator_mock.h` that defines all globals as overridable
-4. Write the `TestEmulatorEnvironment` fixture
-5. Build a single CPU test to validate the pipeline
-6. Iterate from there
+The previous plan attempted to compile individual components in isolation with stubbed dependencies. This failed because:
+
+1. `pch.h` pulls in X11, audio, and joystick headers — impossible to strip without modifying production source
+2. Global variables span every component — cpu.cpp references `Blitter`, `Mfp`, etc. directly
+3. Function pointer dispatch tables require all CPU source files compiled together
+4. The stub layer was larger than the code it tried to isolate
+
+**New approach**: Compile everything once, mock only platform APIs, test by grouping related assertions into separate executables. The emulator library is built with the SAME flags and SAME source files as the production Makefile.txt build. No production code is ever modified.
+
+This means the test framework's job shifts from "provide fake implementations of internal symbols" to "initialize real state, reset between tests, provide assertion helpers."
+
+---
+
+## 11. First Steps (Immediate Actions)
+
+1. Create `tests/` directory structure per Section 2.1
+2. Write root `CMakeLists.txt` — define `steem_test_core` from the same .cpp list as Makefile.txt OBJS
+3. Write `platform_stub.cpp` — stub X11 display functions, audio init/cleanup
+4. Install missing dev packages: `libx11-dev libxext-dev libxxf86vm-dev`
+5. Build `steem_test_core.a` successfully
+6. Write one smoke test that initializes memory and reads a CPU register
+7. Iterate from there

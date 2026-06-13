@@ -29,14 +29,22 @@ typedef void* LPVOID;
 typedef void * HANDLE,*HFONT;
 typedef unsigned long HRESULT;
 #ifdef SSE_X64
+#if __GNUC__ >= 13 && defined(UNIX)
+// X11/Xmd.h (via pch.h) already typedef'd INT64 as 'long'.
+// GCC 13+ treats conflicting re-typedef as a hard error. Both are
+// identical on x86_64 so we just skip the redundant definition.
+#else
 typedef long INT64;
+#endif
 //typedef long __int64;
 typedef long INT_PTR;
 typedef long LONG_PTR;
 typedef unsigned long DWORD_PTR;
 typedef DWORD* LPDWORD;
 #else
-typedef long long INT64;
+#if __GNUC__ >= 13 && defined(UNIX)
+/* GCC 13+ does not allow re-typedefing a name from X11/XMd.h. */
+#endif
 typedef long LONG_PTR;
 typedef long INT_PTR;
 typedef UINT UINT_PTR;

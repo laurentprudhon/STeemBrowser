@@ -1,34 +1,91 @@
+#include "test_fixture.h"
 #include "test_helpers.h"
+#include <cstring>
 
-// CPU register mock state
-static int32_t   s_dreg[8]   = {0};
-static uint32_t  s_areg[8]   = {0};
-static uint32_t  s_pc        = 0;
-static uint16_t  s_sr        = 0;
-static int       s_cycles    = 0;
+// cpuinit.h declares m68ki_initialized and related state; we need the
+// CPU register alias pointers that cpu.cpp sets up.
+extern void SetTimingFunctions();
+extern uint32_t cpureg[16];
+extern uint32_t pc;
+extern uint16_t SR;
 
-void  test_cpu_set_dreg(int idx, int32_t val) {
-  if (idx >= 0 && idx < 8) s_dreg[idx] = val;
+// The bus-access function pointers are set by SetTimingFunctions().
+extern void (*pBusReadB)();
+extern void (*pBusWriteB)();
+
+// Memory access functions from ior.cpp/iow.cpp (declared in device_map.h)
+extern void io_write_b(uint32_t addr, uint8_t val);
+extern uint16_t io_read(uint32_t addr);
+
+// ---- TestEmulatorEnvironment implementation ----
+
+void TestEmulatorEnvironment::SetUp() {
+    // Not much to do here: global chips are statically constructed in
+    // steem_test_core.a. Each test that wants clean state should call
+    // reset_cpu_only() or power_on().
 }
-int32_t test_cpu_dreg(int idx) {
-  if (idx >= 0 && idx < 8) return s_dreg[idx];
-  return 0;
+
+void TestEmulatorEnvironment::TearDown() {
+    // Nothing special — globals will be reused by next test, so each
+    // test that cares about state must reset in its own SetUp() body.
 }
 
-void  test_cpu_set_areg(int idx, uint32_t val) {
-  if (idx >= 0 && idx < 8) s_areg[idx] = val;
-}
-uint32_t test_cpu_areg(int idx) {
-  if (idx >= 0 && idx < 8) return s_areg[idx];
-  return 0;
+void TestEmulatorEnvironment::set_register(int n, uint32_t val) {
+    if (n >= 0 && n < 16)
+        cpureg[n] = val;
 }
 
-void  test_cpu_set_pc(uint32_t pc) { s_pc = pc; }
-uint32_t test_cpu_pc(void)         { return s_pc; }
+uint32_t TestEmulatorEnvironment::reg(int n) const {
+    if (n >= 0 && n < 16)
+        return cpureg[n];
+    return 0;
+}
 
-void  test_cpu_set_sr(uint16_t sr) { s_sr = sr; }
-uint16_t test_cpu_sr(void)         { return s_sr; }
+uint16_t TestEmulatorEnvironment::sr() const {
+    return SR;
+}
 
-void   test_cycles_add(int cycles)   { s_cycles += cycles; }
-int    test_cycles(void)             { return s_cycles; }
-void   test_cycles_reset(void)       { s_cycles = 0; }
+void TestEmulatorEnvironment::execute_one() {
+    m68kProcess();
+}
+
+void TestEmulatorEnvironment::execute_n(uint32_t /*cycles*/) {
+    // For now just one iteration — the cycle budget logic requires
+    // a working clock which needs timing setup. We'll add it later.
+    m68kProcess();
+}
+
+void TestEmulatorEnvironment::write_byte(uint32_t addr, uint8_t val) {
+    io_write_b(addr, val);
+}
+
+uint8_t TestEmulatorEnvironment::read_byte(uint32_t addr) const {
+    // io_read returns WORD, we take low byte.
+    return static_cast<uint8_t>(io_read(addr));
+}
+
+void TestEmulatorEnvironment::write_instruction_at(uint32_t addr, uint16_t opcode) {
+    // Write big-endian: high byte first, then low byte.
+    io_write_b(addr, static_cast<uint8_t>((opcode >> 8) & 0xFF));
+    io_write_b(addr + 1, static_cast<uint8_t>(opcode & 0xFF));
+}
+
+uint16_t TestEmulatorEnvironment::read_instruction_at(uint32_t addr) const {
+    uint8_t hi = static_cast<uint8_t>(io_read(addr));
+    uint8_t lo = static_cast<uint8_t>(io_read(addr + 1));
+    return (hi << 8) | lo;
+}
+
+void TestEmulatorEnvironment::reset_cpu_only() {
+    // We delegate to the real reset path.  reset_peripherals(false) == cold.
+    if (pBusReadB)
+        SetTimingFunctions();
+    reset_peripherals(true);
+}
+
+// ---- free helper for test_helpers.h ----
+
+void write_instruction_at(uint32_t addr, uint16_t opcode) {
+    io_write_b(addr, static_cast<uint8_t>((opcode >> 8) & 0xFF));
+    io_write_b(addr + 1, static_cast<uint8_t>(opcode & 0xFF));
+}
